@@ -8,9 +8,24 @@ This repository addresses the following LMS assessment requirements:
 
 - TECH STACK: Fullstack application with frontend, backend, and database.
 - USER ROLES & FEATURES:
-  - Admin: manage users, roles, and access control via admin pages.
-  - Trainee: browse courses and book course sessions.
-  - Trainer: schedule class sessions and open/close session availability.
+  - Admin:
+    - Manage users and assign roles (`Admin` / `Trainer` / `Trainee`).
+    - Manage courses and control access via admin pages.
+    - Monitor overall platform data via the admin dashboard (demo UI).
+  - Trainer:
+    - Create/manage course content (trainer pages / course builder in demo UI).
+    - Schedule live class sessions and toggle session availability (open/close).
+    - Track enrollments and course performance in the trainer dashboard (demo UI).
+  - Trainee ( `Student`):
+    - Browse/search the course catalog and view course details.
+    - Book course sessions (with a mock payment flow).
+    - Learn from the course player experience (curriculum, resources, notes) and manage personal learning pages (demo UI).
+  - Support (demo UI):
+    - Access support workspace with shortcuts to user management and trainer approvals.
+  - Moderator (demo UI):
+    - Access moderation workspace (placeholder) for reports/comments moderation.
+  - Finance (demo UI):
+    - Access finance workspace with analytics; payments management is a placeholder.
 - DELIVERABLES:
   - Source code included in this repository.
   - README with setup and architecture notes.
@@ -19,6 +34,7 @@ This repository addresses the following LMS assessment requirements:
 ## What Was Implemented
 
 ### Core LMS
+
 - Role model with `Admin`, `Trainer`, and `Trainee` user roles.
 - Admin UI for managing user roles, courses, and access by role.
 - Course browsing and trainee booking workflows.
@@ -28,6 +44,7 @@ This repository addresses the following LMS assessment requirements:
 - Simple current-user simulation flow for role-based UI behavior.
 
 ### Demo UI / UX upgrade
+
 - Premium SaaS landing page (hero, features, popular courses, top instructors, statistics, testimonials, pricing, FAQ, CTA, footer).
 - Rich student dashboard (KPIs with trends, weekly progress chart, weekly goal, achievement badges, continue-learning rail, upcoming live classes, course recommendations, activity timeline, notifications).
 - Netflix-style course learning page with video player, sectioned curriculum sidebar, and tabbed content (Overview · Notes · Resources · Discussion · Quiz).
@@ -40,6 +57,7 @@ This repository addresses the following LMS assessment requirements:
 - Polished login (demo-account picker + form), pricing, about, FAQ, contact pages.
 
 ### Multilingual & RTL architecture
+
 - English (LTR) and Arabic (RTL) — switchable via `EN / العربية` toggle in navbar/sidebar/footer.
 - Locale persisted in the `ark_lang` cookie via `/lang/{en|ar}` endpoint.
 - `<html lang dir>` rendered server-side from cookie — full RTL mirroring for navigation, sidebar, tables, charts, and Bootstrap utilities (`ml-*`, `mr-*`, `text-left/right`, `dropdown-menu-right`, `border-left/right`, etc.).
@@ -47,11 +65,13 @@ This repository addresses the following LMS assessment requirements:
 - Dictionary-based translation in `ArkkanLMS.Web/Localization/Strings.cs` — easy to extend (just add keys).
 
 ### Theming
+
 - Light & Dark modes — toggle in navbar/sidebar/profile. Persisted in `ark_theme` cookie via `/theme/{light|dark}` endpoint.
 - Glassmorphism, soft shadows, rounded `2xl` corners, premium cards, gradient highlights, smooth Framer-style transitions.
 - Role-based color accents: students → blue/purple, trainers → emerald/orange, admin → slate/indigo.
 
 ### Responsive
+
 - Desktop: full sidebar layout.
 - Tablet/mobile: drawer toggle for admin/trainer, bottom navigation for students.
 
@@ -74,17 +94,17 @@ The application uses a layered architecture with clean separation between domain
 1. Install the .NET 10 SDK if not already installed.
 2. Open the solution in Visual Studio or use the .NET CLI from the repository root.
 3. Restore packages:
-   ```bash
+  ```bash
    dotnet restore ArkkanLMS.sln
-   ```
+  ```
 4. Build the solution:
-   ```bash
+  ```bash
    dotnet build ArkkanLMS.sln
-   ```
+  ```
 5. Run the web project:
-   ```bash
+  ```bash
    dotnet run --project ArkkanLMS.Web\ArkkanLMS.Web.csproj
-   ```
+  ```
 6. Open the browser at the URL shown in the console (typically `https://localhost:5001`).
 
 The application automatically creates the SQLite database file (`ArkkanLMS.db`) and seeds example data on first run.
@@ -110,7 +130,7 @@ The application automatically creates the SQLite database file (`ArkkanLMS.db`) 
 
 ## Adding new translations
 
-All UI strings live in [`ArkkanLMS.Web/Localization/Strings.cs`](ArkkanLMS.Web/Localization/Strings.cs) as a single dictionary keyed by `(string key, string culture)`. To add a new key:
+All UI strings live in `[ArkkanLMS.Web/Localization/Strings.cs](ArkkanLMS.Web/Localization/Strings.cs)` as a single dictionary keyed by `(string key, string culture)`. To add a new key:
 
 ```csharp
 ["my.new.key"] = new Dictionary<string, string> {
@@ -133,5 +153,3 @@ Then in any `.cshtml`:
 - `GET /theme/light` or `GET /theme/dark` — sets the theme cookie and redirects back.
 
 Both accept an optional `?returnUrl=` parameter that must be a local URL.
-
-
