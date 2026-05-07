@@ -1,0 +1,89 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.AnalyticsModel
+@{
+    ViewData["Title"] = Locale["sb.analytics"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-bar-chart mr-2"></i>@Locale["sb.analytics"]</h2>
+        <div class="text-muted">@(isAr ? "أرقام أداء الدورات والطلاب." : "Course and student performance metrics.")</div>
+    </div>
+    <div class="nav-tabs-pill">
+        <button>7D</button><button class="active">30D</button><button>90D</button><button>1Y</button>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var k in new[]{
+        ("bi-eye", isAr ? "مشاهدات الدروس" : "Lesson views",  "184,210", "+12.4%", true),
+        ("bi-clock", isAr ? "متوسط زمن الجلسة" : "Avg. session", "26m 14s", "+1m 22s", true),
+        ("bi-bar-chart-steps", isAr ? "معدل الإكمال" : "Completion rate", "72%", "+4.2%", true),
+        ("bi-arrow-repeat", isAr ? "إعادة التشغيل" : "Replays", "8,142", "-2.1%", false),
+    })
+    {
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="text-muted"><i class="bi @k.Item1 mr-2"></i>@k.Item2</div>
+                    <span class="@(k.Item5 ? "kpi-trend-up" : "kpi-trend-down") small"><i class="bi @(k.Item5 ? "bi-arrow-up-right" : "bi-arrow-down-right")"></i> @k.Item4</span>
+                </div>
+                <div class="kpi-value">@k.Item3</div>
+            </div></div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card chart-card"><div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-graph-up mr-2"></i>@(isAr ? "اتجاه المشاهدات" : "Views trend")</h5>
+            <canvas id="viewsChart" height="110"></canvas>
+        </div></div>
+    </div>
+    <div class="col-lg-4 mb-3">
+        <div class="card chart-card h-100"><div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-pie-chart mr-2"></i>@(isAr ? "توزيع الجمهور" : "Audience split")</h5>
+            <canvas id="audienceChart" height="160"></canvas>
+        </div></div>
+    </div>
+</div>
+
+<div class="card chart-card mt-2"><div class="card-body">
+    <h5 class="mb-3"><i class="bi bi-bar-chart-line mr-2"></i>@Locale["trainer.coursePerf"]</h5>
+    <canvas id="perfChart" height="110"></canvas>
+</div></div>
+
+@section Scripts {
+<script>
+  (function(){
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const grid = isDark ? 'rgba(148,163,184,.18)' : 'rgba(148,163,184,.25)';
+    const text = isDark ? '#cbd5e1' : '#475569';
+    const v = document.getElementById('viewsChart');
+    if (v && window.Chart) new Chart(v, {
+      type:'line',
+      data:{labels:Array.from({length:30},(_,i)=>i+1),
+            datasets:[{ data:[1.2,1.4,1.5,1.7,1.6,1.8,2.0,2.1,2.3,2.4,2.6,2.4,2.7,2.9,3.0,3.2,3.3,3.5,3.6,3.4,3.7,3.8,4.0,4.2,4.1,4.4,4.6,4.7,4.9,5.1].map(x=>x*1000), borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.12)', fill:true, tension:.4, pointRadius:0 }]},
+      options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{ticks:{color:text}, grid:{color:grid}}, x:{ticks:{color:text}, grid:{display:false}}}}
+    });
+    const a = document.getElementById('audienceChart');
+    if (a && window.Chart) new Chart(a, {
+      type:'doughnut',
+      data:{ labels:['Web','Mobile','Tablet','TV'], datasets:[{ data:[58,30,9,3], backgroundColor:['#4f46e5','#7c3aed','#0ea5e9','#16a34a'], borderWidth:0 }] },
+      options:{ plugins:{legend:{position:'bottom', labels:{color:text}}}, cutout:'62%' }
+    });
+    const p = document.getElementById('perfChart');
+    if (p && window.Chart) new Chart(p, {
+      type:'bar',
+      data:{ labels:['Advanced React','ML A–Z','Figma','Cloud Pro','Cybersec'], datasets:[
+          { label:'Completion', data:[72,64,82,55,68], backgroundColor:'rgba(124,58,237,.65)', borderRadius:8 },
+          { label:'Engagement', data:[88,76,94,68,80], backgroundColor:'rgba(16,185,129,.55)', borderRadius:8 } ]},
+      options:{ responsive:true, plugins:{legend:{position:'top', labels:{color:text}}}, scales:{y:{beginAtZero:true,max:100, ticks:{color:text}, grid:{color:grid}}, x:{ticks:{color:text}, grid:{display:false}}}}
+    });
+  })();
+</script>
+}

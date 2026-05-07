@@ -1,0 +1,48 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Student.WishlistModel
+@{
+    ViewData["Title"] = Locale["sb.wishlist"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-heart-fill text-danger mr-2"></i>@Locale["sb.wishlist"]</h2>
+        <div class="text-muted">@(isAr ? "الدورات التي حفظتها لتعود إليها." : "Courses you've saved to return to.")</div>
+    </div>
+    <button class="btn btn-outline-secondary"><i class="bi bi-cart-plus mr-2"></i>@(isAr ? "إضافة الكل للسلة" : "Add all to cart")</button>
+</div>
+
+<div class="row">
+@foreach (var c in DemoData.PopularCourses.Skip(2))
+{
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card course-card h-100">
+            <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color, #1e1b4b);">
+                @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
+                else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
+                <i class="bi @c.Icon"></i>
+            </div>
+            <div class="card-body pt-0 d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge-soft">@c.Category</span>
+                    <button class="btn btn-ghost btn-sm" title="@(isAr ? "إزالة" : "Remove")"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <h6 class="mb-2" style="line-height:1.35;">@(isAr ? c.TitleAr : c.TitleEn)</h6>
+                <div class="text-muted small mb-3">@c.Instructor</div>
+                <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <div>
+                        @if (c.Price == 0)
+                        { <strong class="text-grad">@Locale["cat.free"]</strong> }
+                        else
+                        { <strong>$@c.Price</strong> @if (c.OriginalPrice.HasValue) { <span class="text-faint small ml-2"><del>$@c.OriginalPrice</del></span> } }
+                    </div>
+                    <a class="btn btn-primary btn-sm" asp-page="/Courses/Details" asp-route-id="1"><i class="bi bi-cart-plus"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>

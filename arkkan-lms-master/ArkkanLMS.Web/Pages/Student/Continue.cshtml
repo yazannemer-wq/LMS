@@ -1,0 +1,218 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Student.ContinueModel
+@{
+    ViewData["Title"] = Locale["sb.continueLearning"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+    var courseTitle = isAr ? "React و Next.js المتقدّم" : "Advanced React & Next.js";
+    var instructor = isAr ? "سارة خالد" : "Sara Khalid";
+
+    // 5 sections × 4 lessons each
+    var sections = new (string En, string Ar, (string En, string Ar, string Duration, bool Done, bool Active)[] Lessons)[]
+    {
+        ("Section 1 — Foundations",        "القسم 1 — الأساسيات",       new[]{
+            ("Course welcome",               "الترحيب بالدورة",                "02:14", true,  false),
+            ("Mental model of React 19",    "النموذج الذهني لـ React 19",     "11:08", true,  false),
+            ("Setting up the workspace",    "إعداد بيئة العمل",                "08:42", true,  false),
+            ("Project: build a tracker",    "مشروع: بناء متتبّع",              "14:55", true,  false),
+        }),
+        ("Section 2 — Server Components",  "القسم 2 — مكوّنات الخادم",  new[]{
+            ("Why RSCs matter",              "لماذا تهمّ مكوّنات الخادم",      "09:30", true,  false),
+            ("Suspense & streaming",         "Suspense والتدفّق",                "12:08", false, true),
+            ("Data fetching patterns",       "أنماط جلب البيانات",               "16:45", false, false),
+            ("Quiz: server vs client",       "اختبار: الخادم مقابل العميل",      "Quiz",  false, false),
+        }),
+        ("Section 3 — Performance",        "القسم 3 — الأداء",           new[]{
+            ("Profiling with DevTools",     "تحليل الأداء بـ DevTools",          "13:20", false, false),
+            ("Memoization the right way",   "التذكير (memoization) بصورة صحيحة", "10:11", false, false),
+            ("Bundle splitting",             "تقسيم الحزم",                       "08:25", false, false),
+            ("Edge runtime tradeoffs",      "موازنات تشغيل الحافة",              "11:00", false, false),
+        }),
+        ("Section 4 — State at scale",     "القسم 4 — إدارة الحالة في المشاريع الكبيرة", new[]{
+            ("Zustand vs Redux Toolkit",    "Zustand مقابل Redux Toolkit",       "14:48", false, false),
+            ("URL as state",                 "URL كحالة",                         "07:33", false, false),
+            ("Optimistic updates",          "التحديثات المتفائلة",               "12:55", false, false),
+            ("Assignment: shopping cart",   "واجب: عربة تسوّق",                  "Assignment", false, false),
+        }),
+        ("Section 5 — Production",         "القسم 5 — الإنتاج",         new[]{
+            ("Error handling at the edge", "معالجة الأخطاء على الحافة",          "09:18", false, false),
+            ("Observability with OTel",    "المراقبة بـ OpenTelemetry",          "13:42", false, false),
+            ("Final project review",        "مراجعة المشروع النهائي",             "20:00", false, false),
+            ("Capstone exam",               "الاختبار الختامي",                  "Quiz",  false, false),
+        }),
+    };
+
+    int totalLessons = 0; int doneLessons = 0;
+    foreach (var s in sections) { foreach (var l in s.Lessons) { totalLessons++; if (l.Done) doneLessons++; } }
+    int percent = totalLessons == 0 ? 0 : (int)Math.Round(100.0 * doneLessons / totalLessons);
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3">
+    <div>
+        <div class="text-muted small mb-1"><a asp-page="/Dashboard/Index">@Locale["sb.dashboard"]</a> / <a asp-page="/Student/MyCourses">@Locale["sb.myCourses"]</a></div>
+        <h2 class="mb-1">@courseTitle</h2>
+        <div class="text-muted">@instructor · @Locale["learn.progress"]: <strong class="text-grad">@percent%</strong></div>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex" style="gap:.5rem;">
+        <button class="btn btn-outline-secondary"><i class="bi bi-bookmark mr-2"></i>@Locale["learn.bookmark"]</button>
+        <button class="btn btn-primary"><i class="bi bi-check2 mr-2"></i>@Locale["learn.markComplete"]</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        @* Player *@
+        <div class="video-player ring-pulse">
+            <button class="play-button" type="button" aria-label="Play"><i class="bi bi-play-fill"></i></button>
+            <div class="player-meta">
+                <div style="font-size:.85rem; opacity:.85;">@(isAr ? "القسم 2 · الدرس 2" : "Section 2 · Lesson 2")</div>
+                <div style="font-size:1.1rem;">@(isAr ? "Suspense والتدفّق" : "Suspense & streaming")</div>
+            </div>
+        </div>
+
+        @* Tabs *@
+        <div class="nav-tabs-pill mt-4 mb-3">
+            <button class="active" data-tab="overview">@Locale["learn.tab.overview"]</button>
+            <button data-tab="notes">@Locale["learn.tab.notes"]</button>
+            <button data-tab="resources">@Locale["learn.tab.resources"]</button>
+            <button data-tab="discussion">@Locale["learn.tab.discussion"]</button>
+            <button data-tab="quiz">@Locale["learn.tab.quiz"]</button>
+        </div>
+
+        <div class="card feature-card" id="tab-overview">
+            <div class="card-body">
+                <h5>@(isAr ? "نظرة عامة على الدرس" : "Lesson overview")</h5>
+                <p class="text-muted mb-3">
+                    @(isAr
+                        ? "في هذا الدرس نستكشف كيف يتيح Suspense تدفّق واجهات المستخدم من الخادم، وكيف نُصمّم حدودًا فعّالة لتجارب فورية حتى مع البيانات البطيئة."
+                        : "In this lesson we explore how Suspense lets us stream UI from the server and design effective boundaries that keep the experience instant even on slow networks.")
+                </p>
+                <ul class="list-clean">
+                    <li><i class="bi bi-check-circle-fill"></i> @(isAr ? "فهم نموذج Suspense الذهني" : "Understand the Suspense mental model")</li>
+                    <li><i class="bi bi-check-circle-fill"></i> @(isAr ? "تصميم حدود التحميل" : "Design loading boundaries")</li>
+                    <li><i class="bi bi-check-circle-fill"></i> @(isAr ? "تجنّب الشلالات في الجلب" : "Avoid fetch waterfalls")</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card feature-card d-none" id="tab-notes">
+            <div class="card-body">
+                <h5>@Locale["learn.tab.notes"]</h5>
+                <textarea class="form-control mb-3" rows="5" placeholder="@Locale["learn.takeNote"]">@(isAr ? "Suspense يعمل عبر throw promise. تذكّر تصميم حدود مرتّبة." : "Suspense works via throw promise. Remember to design tidy boundaries.")</textarea>
+                <button class="btn btn-primary"><i class="bi bi-save mr-2"></i>@Locale["profile.save"]</button>
+            </div>
+        </div>
+
+        <div class="card feature-card d-none" id="tab-resources">
+            <div class="card-body">
+                <h5>@Locale["learn.tab.resources"]</h5>
+                <ul class="list-clean">
+                    <li><i class="bi bi-file-earmark-pdf-fill" style="color:#dc2626"></i> Suspense_cheatsheet.pdf</li>
+                    <li><i class="bi bi-file-earmark-zip-fill" style="color:#0ea5e9"></i> starter-code.zip</li>
+                    <li><i class="bi bi-link-45deg"></i> https://react.dev/reference/react/Suspense</li>
+                    <li><i class="bi bi-github"></i> github.com/arkkan/lesson-22-suspense</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card feature-card d-none" id="tab-discussion">
+            <div class="card-body">
+                <h5>@Locale["learn.tab.discussion"]</h5>
+                <div class="message-row mb-2">
+                    <span class="avatar avatar-sm" style="background: linear-gradient(135deg,#4f46e5,#1e1b4b);">A</span>
+                    <div class="flex-fill">
+                        <div class="msg-meta">
+                            <span class="msg-name">@(isAr ? "أحمد ر." : "Ahmed R.")</span>
+                            <span class="msg-time">@(isAr ? "قبل 12 دقيقة" : "12 min ago")</span>
+                        </div>
+                        <div class="msg-preview">@(isAr ? "هل يُنصح باستخدام Suspense مع جلب البيانات في كل صفحة؟" : "Should we wrap every page-level fetch in Suspense?")</div>
+                    </div>
+                </div>
+                <div class="message-row mb-3">
+                    <span class="avatar avatar-sm" style="background: linear-gradient(135deg,#7c3aed,#1e1b4b);">SK</span>
+                    <div class="flex-fill">
+                        <div class="msg-meta">
+                            <span class="msg-name">@(isAr ? "سارة خالد · المدرّبة" : "Sara Khalid · Instructor")</span>
+                            <span class="msg-time">@(isAr ? "قبل 9 دقائق" : "9 min ago")</span>
+                        </div>
+                        <div class="msg-preview">@(isAr ? "غالبًا نعم، لكن صمّم الحدود قريبة من البيانات البطيئة فقط." : "Usually yes, but draw boundaries close to the slowest data only.")</div>
+                    </div>
+                </div>
+                <div class="d-flex" style="gap:.5rem;">
+                    <input class="form-control" placeholder="@(isAr ? "اكتب ردًا..." : "Write a reply...")" />
+                    <button class="btn btn-primary"><i class="bi bi-send"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card feature-card d-none" id="tab-quiz">
+            <div class="card-body">
+                <h5 class="mb-3">@Locale["learn.tab.quiz"]</h5>
+                <p class="font-weight-bold">@(isAr ? "1) ما الفائدة الأساسية لـ Suspense؟" : "1) What is the primary benefit of Suspense?")</p>
+                <div class="form-check"><input class="form-check-input" type="radio" name="q1" id="q1a" /><label class="form-check-label" for="q1a">@(isAr ? "إخفاء الأخطاء" : "Hide errors")</label></div>
+                <div class="form-check"><input class="form-check-input" type="radio" name="q1" id="q1b" checked /><label class="form-check-label" for="q1b">@(isAr ? "تأخير العرض حتى الجاهزية مع HTML تدريجي" : "Defer rendering until ready while streaming HTML")</label></div>
+                <div class="form-check"><input class="form-check-input" type="radio" name="q1" id="q1c" /><label class="form-check-label" for="q1c">@(isAr ? "إعادة جلب التلقائي" : "Automatic refetching")</label></div>
+                <button class="btn btn-primary mt-3"><i class="bi bi-check2 mr-2"></i>@(isAr ? "تسليم" : "Submit")</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+        <div class="card chart-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0"><i class="bi bi-list-task mr-2" aria-hidden="true"></i>@Locale["learn.curriculum"]</h5>
+                    <span class="badge-soft">@doneLessons / @totalLessons</span>
+                </div>
+                <div class="progress-track mb-3" style="height: 8px;">
+                    <div class="progress-fill" style="width:@(percent)%; height:100%;"></div>
+                </div>
+
+                @foreach (var (sEn, sAr, lessons) in sections)
+                {
+                    <div class="mt-3">
+                        <div class="font-weight-bold mb-2">@(isAr ? sAr : sEn)</div>
+                        <ul class="lesson-list">
+                            @foreach (var l in lessons)
+                            {
+                                var cls = l.Active ? "active" : (l.Done ? "completed" : "");
+                                <li class="@cls">
+                                    @if (l.Done)
+                                    { <i class="bi bi-check-circle-fill"></i> }
+                                    else if (l.Active)
+                                    { <i class="bi bi-play-circle-fill" style="color:var(--brand-1)"></i> }
+                                    else if (l.Duration == "Quiz")
+                                    { <i class="bi bi-patch-question"></i> }
+                                    else if (l.Duration == "Assignment")
+                                    { <i class="bi bi-pencil-square"></i> }
+                                    else
+                                    { <i class="bi bi-play-circle"></i> }
+                                    <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@(isAr ? l.Ar : l.En)</span>
+                                    <span class="lesson-duration">@l.Duration</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+  (function(){
+    document.querySelectorAll('.nav-tabs-pill button[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tabs-pill button[data-tab]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        ['overview','notes','resources','discussion','quiz'].forEach(t => {
+          const el = document.getElementById('tab-' + t);
+          if (el) el.classList.toggle('d-none', t !== btn.dataset.tab);
+        });
+      });
+    });
+  })();
+</script>
+}

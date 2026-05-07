@@ -1,0 +1,56 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Student.CertificatesModel
+@{
+    ViewData["Title"] = Locale["sb.certificates"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="mb-4">
+    <h2 class="mb-1"><i class="bi bi-award mr-2 text-grad"></i>@Locale["sb.certificates"]</h2>
+    <div class="text-muted">@(isAr ? "شهاداتك المعتمدة. كل شهادة قابلة للتحقّق برمز فريد." : "Your verifiable, blockchain-anchored credentials.")</div>
+</div>
+
+<div class="row">
+@foreach (var cert in DemoData.Certificates)
+{
+    <div class="col-md-6 mb-4">
+        <div class="card feature-card h-100" style="overflow:hidden; position:relative;">
+            <div class="position-absolute" style="inset:0; background: radial-gradient(600px 200px at 80% -10%, @(cert.Color)25, transparent 60%); pointer-events:none;"></div>
+            <div class="card-body" style="position:relative;">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="badge-soft" style="color:@cert.Color; background:@(cert.Color)15; border-color:@(cert.Color)30;">
+                        <i class="bi bi-patch-check-fill"></i> @(isAr ? "موثّقة" : "Verified")
+                    </span>
+                    <span class="text-faint small">@cert.Code</span>
+                </div>
+                <div class="text-muted small mb-1">@(isAr ? "شهادة إكمال" : "Certificate of completion")</div>
+                <h4 class="mb-3" style="font-family:var(--font-display);">@(isAr ? cert.CourseAr : cert.CourseEn)</h4>
+                <div class="d-flex justify-content-between align-items-end">
+                    <div>
+                        <div class="text-faint small">@(isAr ? "تاريخ الإصدار" : "Issued")</div>
+                        <strong>@cert.Issued</strong>
+                    </div>
+                    <div class="d-flex" style="gap:.4rem;">
+                        <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-download"></i></button>
+                        <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-share"></i></button>
+                        <button class="btn btn-primary btn-sm"><i class="bi bi-eye mr-2"></i>@(isAr ? "معاينة" : "View")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>
+
+<div class="card glass-soft mt-3">
+    <div class="card-body d-flex align-items-center" style="gap:1rem;">
+        <i class="bi bi-info-circle-fill" style="color:var(--info); font-size:1.5rem;"></i>
+        <div class="flex-fill text-muted">
+            @(isAr
+                ? "شهاداتك مرتبطة بسلسلة بلوكشين عامة وقابلة للتحقّق على linkedin.com/learning/verify."
+                : "Every certificate is anchored to a public blockchain and verifiable on linkedin.com/learning/verify.")
+        </div>
+    </div>
+</div>

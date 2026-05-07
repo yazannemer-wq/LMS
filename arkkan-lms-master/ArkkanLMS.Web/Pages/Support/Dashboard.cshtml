@@ -1,0 +1,42 @@
+@page
+@model ArkkanLMS.Web.Pages.Support.DashboardModel
+@{
+    ViewData["Title"] = "Support workspace";
+    Layout = "_DashboardLayout";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Support workspace</h1>
+        <div class="text-muted">Manage users and handle approvals.</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <strong>Users</strong>
+                    <i class="bi bi-people text-muted"></i>
+                </div>
+                <div class="text-muted small mb-3">Manage user roles and access.</div>
+                <a class="btn btn-primary btn-sm" asp-page="/Admin/Users"><i class="bi bi-arrow-right mr-2"></i>Open</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <strong>Trainer approvals</strong>
+                    <i class="bi bi-patch-check text-muted"></i>
+                </div>
+                <div class="text-muted small mb-3">Approve trainers and onboarding requests.</div>
+                <a class="btn btn-outline-secondary btn-sm" asp-page="/Admin/TrainerApproval"><i class="bi bi-arrow-right mr-2"></i>Open</a>
+            </div>
+        </div>
+    </div>
+</div>
+

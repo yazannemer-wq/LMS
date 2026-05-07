@@ -1,0 +1,134 @@
+@{
+    Layout = null;
+}
+@using ArkkanLMS.Core.Entities
+@using ArkkanLMS.Core.Types
+@using ArkkanLMS.Web.Localization
+@inject ArkkanLMS.Persistence.AppDbContext AppDbContext
+@{
+    User currentUser = null;
+    if (Context.User.Identity?.IsAuthenticated == true)
+    {
+        var userIdValue = Context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (int.TryParse(userIdValue, out int id))
+        {
+            currentUser = AppDbContext.Users.Find(id);
+        }
+    }
+    var dir = Locale.Direction;
+    var lang = Locale.Culture;
+    var themeAttr = Locale.Theme;
+    var path = Context.Request.Path.Value ?? "/";
+    string activeIf(string p) => path.StartsWith(p, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="@lang" dir="@dir" data-theme="@themeAttr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @Locale["brand.name"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600;700&family=Poppins:wght@@500;600;700;800&family=Cairo:wght@@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+    <script src="~/js/site.js"></script>
+</head>
+<body class="min-vh-100 app-shell role-student">
+    <div class="dashboard-shell">
+        <aside class="dashboard-sidebar p-3">
+            <div class="d-flex align-items-center mb-3 px-2">
+                <a class="navbar-brand font-weight-bold d-flex align-items-center mb-0" asp-area="" asp-page="/Dashboard/Index">
+                    <span class="brand-mark mr-2" aria-hidden="true"></span>
+                    @Locale["brand.name"]
+                </a>
+            </div>
+
+            <div class="sidebar-heading">@Locale["sb.student.heading"]</div>
+            <nav class="nav flex-column">
+                <a class="nav-link @activeIf("/Dashboard")" asp-page="/Dashboard/Index"><i class="bi bi-speedometer2" aria-hidden="true"></i>@Locale["sb.dashboard"]</a>
+                <a class="nav-link @activeIf("/Student/MyCourses")" asp-page="/Student/MyCourses"><i class="bi bi-collection-play" aria-hidden="true"></i>@Locale["sb.myCourses"]</a>
+                <a class="nav-link @activeIf("/Student/Continue")" asp-page="/Student/Continue"><i class="bi bi-play-circle" aria-hidden="true"></i>@Locale["sb.continueLearning"]</a>
+                <a class="nav-link @activeIf("/Student/Certificates")" asp-page="/Student/Certificates"><i class="bi bi-award" aria-hidden="true"></i>@Locale["sb.certificates"]</a>
+                <a class="nav-link @activeIf("/Student/Assignments")" asp-page="/Student/Assignments"><i class="bi bi-ui-checks-grid" aria-hidden="true"></i>@Locale["sb.assignments"]</a>
+                <a class="nav-link @activeIf("/Student/Calendar")" asp-page="/Student/Calendar"><i class="bi bi-calendar-event" aria-hidden="true"></i>@Locale["sb.calendar"]</a>
+                <a class="nav-link @activeIf("/Student/Messages")" asp-page="/Student/Messages"><i class="bi bi-chat-dots" aria-hidden="true"></i>@Locale["sb.messages"]</a>
+                <a class="nav-link @activeIf("/Student/Wishlist")" asp-page="/Student/Wishlist"><i class="bi bi-heart" aria-hidden="true"></i>@Locale["sb.wishlist"]</a>
+                <a class="nav-link @activeIf("/Bookings")" asp-page="/Bookings/Index"><i class="bi bi-ticket-perforated" aria-hidden="true"></i>@Locale["sb.bookings"]</a>
+                <a class="nav-link @activeIf("/Courses")" asp-page="/Courses/Index"><i class="bi bi-journal-bookmark" aria-hidden="true"></i>@Locale["sb.browse"]</a>
+                <a class="nav-link @activeIf("/Profile")" asp-page="/Profile/Index"><i class="bi bi-gear" aria-hidden="true"></i>@Locale["sb.settings"]</a>
+            </nav>
+
+            <div class="mt-auto px-2 pt-3">
+                <div class="glass-soft p-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-stars mr-2" style="color: var(--brand-1);" aria-hidden="true"></i>
+                        <strong>@Locale["common.preferences"]</strong>
+                    </div>
+                    <div class="mb-2">@await Html.PartialAsync("_LanguageSwitcher")</div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <span class="text-muted small">@Locale["common.theme"]</span>
+                        @await Html.PartialAsync("_ThemeSwitcher")
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="container-fluid py-2 px-3 d-flex align-items-center justify-content-between flex-wrap" style="gap:.5rem;">
+                    <button class="btn btn-outline-secondary btn-sm mobile-drawer-toggle d-lg-none" data-drawer-toggle aria-label="Menu">
+                        <i class="bi bi-list" aria-hidden="true"></i>
+                    </button>
+                    <div class="d-none d-md-flex align-items-center dashboard-search">
+                        <i class="bi bi-search mr-2" aria-hidden="true"></i>
+                        <input class="form-control form-control-sm" placeholder="@Locale["common.searchPlaceholder"]" aria-label="@Locale["common.search"]" />
+                    </div>
+
+                    <div class="d-flex align-items-center" style="gap:.5rem;">
+                        <span class="streak-pill d-none d-md-inline-flex" title="@Locale["dash.streak"]">
+                            <i class="bi bi-fire mr-2" style="color:#f97316" aria-hidden="true"></i>@Locale["dash.streak"]: 7
+                        </span>
+                        <button class="btn btn-outline-secondary btn-sm" type="button" title="@Locale["common.notifications"]" aria-label="@Locale["common.notifications"]">
+                            <i class="bi bi-bell" aria-hidden="true"></i>
+                            <span class="badge badge-soft" style="background:var(--danger); color:#fff; border-color:transparent; padding:.1rem .35rem; font-size:.65rem; margin-left:.25rem;">3</span>
+                        </button>
+
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle d-inline-flex align-items-center" type="button" id="profileMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="avatar avatar-sm mr-2" aria-hidden="true">@(currentUser?.Name?.Substring(0,1) ?? "S")</span>
+                                @(currentUser?.Name ?? "Student")
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileMenu">
+                                <a class="dropdown-item" asp-page="/Profile/Index"><i class="bi bi-person mr-2" aria-hidden="true"></i>@Locale["profile.tab.personal"]</a>
+                                <a class="dropdown-item" asp-page="/Student/Certificates"><i class="bi bi-award mr-2" aria-hidden="true"></i>@Locale["sb.certificates"]</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-page="/Account/Logout"><i class="bi bi-box-arrow-right mr-2" aria-hidden="true"></i>@Locale["nav.logout"]</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main role="main" class="p-3 p-md-4 fade-in-up">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+        <a asp-page="/Dashboard/Index" class="@activeIf("/Dashboard")"><i class="bi bi-speedometer2"></i>@Locale["sb.dashboard"]</a>
+        <a asp-page="/Student/MyCourses" class="@activeIf("/Student/MyCourses")"><i class="bi bi-collection-play"></i>@Locale["sb.myCourses"]</a>
+        <a asp-page="/Student/Continue" class="@activeIf("/Student/Continue")"><i class="bi bi-play-circle"></i>@Locale["common.continue"]</a>
+        <a asp-page="/Student/Messages" class="@activeIf("/Student/Messages")"><i class="bi bi-chat-dots"></i>@Locale["sb.messages"]</a>
+        <a asp-page="/Profile/Index" class="@activeIf("/Profile")"><i class="bi bi-person"></i>@Locale["sb.settings"]</a>
+    </nav>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@@4.4.3/dist/chart.umd.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,78 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.ContactModel
+@{
+    ViewData["Title"] = Locale["nav.contact"];
+    var isAr = Locale.IsRtl;
+}
+
+<section class="hero text-center" style="padding: 3.5rem 0 2rem;">
+    <div class="container">
+        <span class="hero-eyebrow"><i class="bi bi-envelope-paper-heart"></i> @(isAr ? "نسعد بسماعك" : "We'd love to hear from you")</span>
+        <h1 class="display-4 font-weight-bold mt-3 mb-2">@Locale["nav.contact"]</h1>
+        <p class="lead mx-auto" style="max-width: 600px;">@(isAr ? "أرسل لنا رسالة وسنعود إليك في أقل من 4 ساعات عمل." : "Send us a message and we'll get back to you within 4 working hours.")</p>
+    </div>
+</section>
+
+<div class="container py-4">
+    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+    {
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <i class="bi bi-check-circle mr-2"></i>
+            <div>@Model.StatusMessage</div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-send mr-2"></i>@(isAr ? "أرسل رسالة" : "Send a message")</h5>
+                    <form method="post">
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-3">
+                                <label class="text-faint small">@(isAr ? "الاسم الكامل" : "Full name")</label>
+                                <input class="form-control" name="name" placeholder="@(isAr ? "اسمك" : "Your name")" />
+                            </div>
+                            <div class="form-group col-md-6 mb-3">
+                                <label class="text-faint small">@(isAr ? "البريد الإلكتروني" : "Email")</label>
+                                <input class="form-control" name="email" placeholder="you@example.com" />
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="text-faint small">@(isAr ? "الموضوع" : "Subject")</label>
+                            <select class="form-control">
+                                <option>@(isAr ? "استفسار عام" : "General question")</option>
+                                <option>@(isAr ? "دعم فنّي" : "Technical support")</option>
+                                <option>@(isAr ? "مبيعات الشركات" : "Enterprise sales")</option>
+                                <option>@(isAr ? "أصبح مدرّبًا" : "Become an instructor")</option>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="text-faint small">@(isAr ? "رسالتك" : "Message")</label>
+                            <textarea class="form-control" name="message" rows="5" placeholder="@(isAr ? "كيف يمكننا مساعدتك؟" : "How can we help?")"></textarea>
+                        </div>
+                        <button class="btn btn-primary" type="submit"><i class="bi bi-send mr-2"></i>@(isAr ? "إرسال" : "Submit")</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 mb-4">
+            <div class="card feature-card mb-3">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-headset mr-2"></i>@(isAr ? "قنوات التواصل" : "Channels")</h5>
+                    <div class="admin-stat-row"><span><i class="bi bi-envelope mr-2 text-info"></i>support@arkkan.dev</span><span class="text-muted small">@(isAr ? "متاح 24/7" : "24/7")</span></div>
+                    <div class="admin-stat-row"><span><i class="bi bi-chat-dots mr-2 text-success"></i>@(isAr ? "دردشة مباشرة" : "Live chat")</span><span class="text-muted small">@(isAr ? "9 ص – 9 م" : "9am – 9pm")</span></div>
+                    <div class="admin-stat-row"><span><i class="bi bi-twitter mr-2"></i>@@arkkanlms</span><span class="text-muted small">@(isAr ? "نرد سريعًا" : "Fast")</span></div>
+                </div>
+            </div>
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-geo-alt mr-2"></i>@(isAr ? "مكاتبنا" : "Our offices")</h5>
+                    <div class="mb-3"><strong>@(isAr ? "الرياض" : "Riyadh")</strong><div class="text-muted small">King Fahd Road, Olaya District</div></div>
+                    <div class="mb-3"><strong>@(isAr ? "دبي" : "Dubai")</strong><div class="text-muted small">DIFC, Innovation Hub</div></div>
+                    <div><strong>@(isAr ? "لندن" : "London")</strong><div class="text-muted small">Shoreditch, EC2A</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

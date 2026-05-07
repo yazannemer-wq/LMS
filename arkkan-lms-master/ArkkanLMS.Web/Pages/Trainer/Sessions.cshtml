@@ -1,0 +1,94 @@
+@page
+@model ArkkanLMS.Web.Pages.Trainer.SessionsModel
+@{
+    ViewData["Title"] = "Trainer Sessions";
+    Layout = "_TrainerLayout";
+}
+
+<h1>Trainer Sessions</h1>
+
+@if (!Model.HasCurrentUser)
+{
+    <div class="alert alert-warning">Please sign in. <a asp-page="/Account/Login">Log in</a></div>
+}
+else if (!Model.IsCurrentUserRole(ArkkanLMS.Core.Types.UserRoleType.Trainer))
+{
+    <div class="alert alert-danger">Only trainers can manage sessions.</div>
+}
+else
+{
+    <p>Signed in as <strong>@Model.CurrentUser.Name</strong> (@Model.CurrentUser.Role)</p>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Schedule New Session</h4>
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="NewSession.Title"></label>
+                        <input asp-for="NewSession.Title" class="form-control" />
+                        <span asp-validation-for="NewSession.Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="NewSession.CourseId"></label>
+                        <select asp-for="NewSession.CourseId" asp-items="Model.CourseItems" class="form-control"></select>
+                        <span asp-validation-for="NewSession.CourseId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="NewSession.StartTime"></label>
+                        <input asp-for="NewSession.StartTime" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="NewSession.StartTime" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="NewSession.EndTime"></label>
+                        <input asp-for="NewSession.EndTime" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="NewSession.EndTime" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Session</button>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Course</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var session in Model.Sessions)
+            {
+                <tr>
+                    <td>@session.Title</td>
+                    <td>@session.Course.Name</td>
+                    <td>@session.StartTime.ToLocalTime():g</td>
+                    <td>@session.EndTime.ToLocalTime():g</td>
+                    <td>@(session.IsOpen ? "Open" : "Closed")</td>
+                    <td>
+                        <form method="post" asp-page-handler="Toggle" class="d-inline">
+                            <input type="hidden" name="sessionId" value="@session.Id" />
+                            <input type="hidden" name="isOpen" value="@(!session.IsOpen)" />
+                            <button type="submit" class="btn btn-sm @(session.IsOpen ? "btn-warning" : "btn-success")">
+                                @(session.IsOpen ? "Close" : "Open")
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

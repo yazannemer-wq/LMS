@@ -1,0 +1,41 @@
+@page "{code:int}"
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.StatusModel
+@{
+    ViewData["Title"] = Model.Title;
+    var isAr = Model.Locale?.IsRtl ?? false;
+}
+
+<div class="card feature-card">
+    <div class="card-body p-4 p-md-5 text-center">
+        <div class="mb-3" style="font-size:2.25rem; line-height:1;">
+            <i class="bi @Model.Icon"></i>
+        </div>
+        <div class="text-faint small mb-2">@(isAr ? "الحالة" : "Status") @Model.Code</div>
+        <h1 class="h3 mb-2">@Model.Title</h1>
+        <p class="text-muted mb-4">@Model.Message</p>
+
+        @if (Model.Code == 401)
+        {
+            <div class="d-flex flex-column flex-sm-row justify-content-center" style="gap:.75rem;">
+                <a class="btn btn-primary" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right mr-2"></i>@(isAr ? "تسجيل الدخول" : "Sign in")</a>
+                <a class="btn btn-outline-secondary" asp-page="/Index"><i class="bi bi-house-door mr-2"></i>@(isAr ? "الرئيسية" : "Home")</a>
+            </div>
+        }
+        else if (Model.Code == 403)
+        {
+            <div class="d-flex flex-column flex-sm-row justify-content-center" style="gap:.75rem;">
+                <a class="btn btn-primary" asp-page="/Dashboard/Index"><i class="bi bi-speedometer2 mr-2"></i>@(isAr ? "العودة لمساحة العمل" : "Go to workspace")</a>
+                <a class="btn btn-outline-secondary" asp-page="/Profile/Index"><i class="bi bi-person mr-2"></i>@(isAr ? "الملف الشخصي" : "Profile")</a>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column flex-sm-row justify-content-center" style="gap:.75rem;">
+                <a class="btn btn-primary" asp-page="/Index"><i class="bi bi-house-door mr-2"></i>@(isAr ? "الرئيسية" : "Home")</a>
+                <a class="btn btn-outline-secondary" asp-page="/Courses/Index"><i class="bi bi-journal-bookmark mr-2"></i>@(isAr ? "الدورات" : "Courses")</a>
+            </div>
+        }
+    </div>
+</div>
+

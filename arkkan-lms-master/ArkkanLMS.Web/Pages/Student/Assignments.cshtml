@@ -1,0 +1,103 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Student.AssignmentsModel
+@{
+    ViewData["Title"] = Locale["sb.assignments"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+
+    string statusLabel(string s) => s switch
+    {
+        "in_progress" => isAr ? "قيد العمل" : "In progress",
+        "submitted"   => isAr ? "مُسلَّم"    : "Submitted",
+        "graded"      => isAr ? "تم تقييمه" : "Graded",
+        "pending"     => isAr ? "بانتظار البدء" : "Pending",
+        _             => s
+    };
+    string statusColor(string s) => s switch
+    {
+        "in_progress" => "var(--brand-1)",
+        "submitted"   => "var(--info)",
+        "graded"      => "var(--success)",
+        "pending"     => "var(--warning)",
+        _             => "var(--text-faint)"
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-ui-checks-grid mr-2"></i>@Locale["sb.assignments"]</h2>
+        <div class="text-muted">@(isAr ? "تابع تقدّمك في الواجبات والاختبارات." : "Track all your assignments and quizzes.")</div>
+    </div>
+    <div class="nav-tabs-pill">
+        <button class="active">@(isAr ? "الكل" : "All")</button>
+        <button>@(isAr ? "قيد العمل" : "In progress")</button>
+        <button>@(isAr ? "مُسلَّمة" : "Submitted")</button>
+        <button>@(isAr ? "تم تقييمها" : "Graded")</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted mb-1"><i class="bi bi-pencil-square mr-2"></i>@(isAr ? "إجمالي" : "Total")</div>
+            <div class="kpi-value">14</div>
+        </div></div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted mb-1"><i class="bi bi-clock-history mr-2"></i>@(isAr ? "قيد العمل" : "In progress")</div>
+            <div class="kpi-value">3</div>
+        </div></div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted mb-1"><i class="bi bi-check2-circle mr-2"></i>@(isAr ? "مُسلَّمة" : "Submitted")</div>
+            <div class="kpi-value">8</div>
+        </div></div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="card kpi-card"><div class="card-body">
+            <div class="text-muted mb-1"><i class="bi bi-trophy mr-2"></i>@(isAr ? "متوسط الدرجات" : "Avg. score")</div>
+            <div class="kpi-value">88%</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="pl-3">@(isAr ? "العنوان" : "Title")</th>
+                    <th>@(isAr ? "الدورة" : "Course")</th>
+                    <th>@(isAr ? "الاستحقاق" : "Due")</th>
+                    <th>@(isAr ? "الحالة" : "Status")</th>
+                    <th class="pr-3 text-right"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var a in DemoData.Assignments)
+            {
+                <tr>
+                    <td class="pl-3">
+                        <div class="d-flex align-items-center" style="gap:.6rem;">
+                            <span style="width:34px; height:34px; border-radius:10px; background:@(a.Color)20; color:@a.Color; display:inline-flex; align-items:center; justify-content:center;">
+                                <i class="bi bi-pencil-square"></i>
+                            </span>
+                            <strong>@(isAr ? a.TitleAr : a.TitleEn)</strong>
+                        </div>
+                    </td>
+                    <td class="text-muted">@(isAr ? a.CourseAr : a.CourseEn)</td>
+                    <td>@(isAr ? a.DueAr : a.DueEn)</td>
+                    <td><span class="badge-soft" style="color:@(statusColor(a.Status)); background:@(statusColor(a.Status))15; border-color:@(statusColor(a.Status))30;">@statusLabel(a.Status)</span></td>
+                    <td class="pr-3 text-right">
+                        <a class="btn btn-outline-secondary btn-sm" href="#"><i class="bi bi-eye"></i></a>
+                        <a class="btn btn-primary btn-sm" href="#">@(isAr ? "متابعة" : "Open")</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

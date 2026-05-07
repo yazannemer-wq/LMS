@@ -1,0 +1,69 @@
+@page
+@model ArkkanLMS.Web.Areas.Admin.Pages.Authors.IndexModel
+
+@{
+    ViewData["Title"] = "All Authors";
+}
+
+<section class="hero text-center py-4">
+    <div class="container">
+        <h1 class="display-5 font-weight-bold mb-3">Manage Authors</h1>
+        <p class="lead mx-auto mb-4" style="max-width: 600px;">View and manage course authors and their professional details.</p>
+        <a class="btn btn-success btn-lg" asp-page="Create">Create New Author</a>
+    </div>
+</section>
+
+<div class="container py-4">
+    @if (Model.Authors.Any())
+    {
+        <div class="row">
+            @foreach (var item in Model.Authors)
+            {
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card author-card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.FirstName @item.MiddleName @item.LastName @item.Suffix</h5>
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <p class="card-text flex-grow-1">@item.Description</p>
+                            }
+                            <div class="mb-3">
+                                @if (!string.IsNullOrEmpty(item.ContactEmail))
+                                {
+                                    <small class="d-block"><i class="fas fa-envelope mr-1"></i>@item.ContactEmail</small>
+                                }
+                                @if (!string.IsNullOrEmpty(item.ContactPhoneNumber))
+                                {
+                                    <small class="d-block"><i class="fas fa-phone mr-1"></i>@item.ContactPhoneNumber</small>
+                                }
+                                @if (!string.IsNullOrEmpty(item.WebsiteURL))
+                                {
+                                    <small class="d-block"><i class="fas fa-globe mr-1"></i><a href="@item.WebsiteURL" target="_blank">@item.WebsiteURL</a></small>
+                                }
+                            </div>
+                            <div class="text-muted small mb-3">
+                                <div>Created: @item.DateCreated.ToShortDateString()</div>
+                                <div>Updated: @item.DateUpdated.ToShortDateString()</div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">Edit</a>
+                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
+                                <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h3 class="text-muted">No authors found.</h3>
+            <p class="text-muted">Start by adding your first author.</p>
+            <a class="btn btn-success" asp-page="Create">Create New Author</a>
+        </div>
+    }
+</div>
+
+

@@ -1,0 +1,19 @@
+@page
+@model ArkkanLMS.Web.Pages.Finance.PaymentsModel
+@{
+    ViewData["Title"] = "Payments";
+    Layout = "_DashboardLayout";
+    ViewData["EmptyState.Title"] = "No payment records yet";
+    ViewData["EmptyState.Message"] = "This is a demo workspace. Connect a payment provider or generate transactions to see them here.";
+    ViewData["EmptyState.Icon"] = "bi-credit-card";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Payments</h1>
+        <div class="text-muted">Manage payments, refunds, and reconciliation (demo).</div>
+    </div>
+</div>
+
+@await Html.PartialAsync("_EmptyState")
+

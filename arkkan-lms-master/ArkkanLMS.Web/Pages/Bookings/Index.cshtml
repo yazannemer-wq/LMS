@@ -1,0 +1,58 @@
+@page
+@model ArkkanLMS.Web.Pages.Bookings.IndexModel
+@{
+    ViewData["Title"] = "My Bookings";
+    Layout = "_StudentLayout";
+}
+
+<h1>Bookings</h1>
+
+@if (!Model.HasCurrentUser)
+{
+    <div class="alert alert-warning">Please sign in. <a asp-page="/Account/Login">Log in</a></div>
+}
+else if (!Model.IsCurrentUserRole(ArkkanLMS.Core.Types.UserRoleType.Trainee))
+{
+    <div class="alert alert-danger">Only trainees can view bookings.</div>
+}
+else
+{
+    <p>Current trainee: <strong>@Model.CurrentUser.Name</strong></p>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Session</th>
+                <th>Price</th>
+                <th>Paid</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.Bookings)
+            {
+                <tr>
+                    <td>@booking.Course.Name</td>
+                    <td>@(booking.ClassSession?.Title ?? "N/A")</td>
+                    <td>@booking.Price.ToString("C")</td>
+                    <td>@(booking.IsPaid ? "Yes" : "No")</td>
+                    <td>
+                        @if (!booking.IsPaid)
+                        {
+                            <form method="post">
+                                <input type="hidden" name="bookingId" value="@booking.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">Pay</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-success">Paid</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+

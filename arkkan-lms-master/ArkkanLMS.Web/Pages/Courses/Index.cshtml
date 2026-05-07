@@ -1,0 +1,192 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Courses.IndexModel
+@{
+    ViewData["Title"] = Locale["nav.courses"];
+    var isAr = Locale.IsRtl;
+    var categories = isAr
+        ? new[] { "الكل", "تطوير الويب", "علم البيانات", "التصميم", "السحابة", "الأمن السيبراني", "التسويق", "المالية", "اللغات" }
+        : new[] { "All",  "Web Development", "Data Science", "Design", "Cloud", "Security", "Marketing", "Finance", "Languages" };
+}
+
+@* HERO *@
+<section class="hero text-center" style="padding: 3.5rem 0 2.5rem;">
+    <div class="container">
+        <span class="hero-eyebrow mb-3"><i class="bi bi-grid-3x3-gap"></i> @(isAr ? "1,240 دورة في 30 فئة" : "1,240 courses · 30 categories")</span>
+        <h1 class="display-4 font-weight-bold mt-3 mb-2">@Locale["cat.title"]</h1>
+        <p class="lead mx-auto mb-4">@Locale["cat.subtitle"]</p>
+        <div class="dashboard-search mx-auto" style="max-width:520px; padding:.5rem 1rem;">
+            <i class="bi bi-search mr-2"></i>
+            <input class="form-control" placeholder="@(isAr ? "ما الذي تريد تعلّمه اليوم؟" : "What do you want to learn today?")" />
+            <button class="btn btn-primary"><i class="bi bi-arrow-right"></i></button>
+        </div>
+    </div>
+</section>
+
+<div class="container py-4">
+    @* CATEGORY PILLS *@
+    <div class="d-flex flex-wrap mb-4" style="gap:.5rem;">
+        @{ int ci = 0; }
+        @foreach (var c in categories)
+        {
+            ci++;
+            <a href="#" class="badge-soft @(ci == 1 ? "" : "")" style="@(ci == 1 ? "background:var(--brand-soft); color:var(--brand-1); border-color:rgba(79,70,229,.3);" : "") padding:.5rem .9rem; font-size:.9rem; font-weight:600; text-decoration:none;">@c</a>
+        }
+    </div>
+
+    <div class="row">
+        @* FILTERS *@
+        <div class="col-lg-3 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h6 class="mb-3"><i class="bi bi-funnel mr-2"></i>@(isAr ? "الفلاتر" : "Filters")</h6>
+
+                    <div class="mb-3">
+                        <div class="text-faint small text-uppercase mb-2" style="letter-spacing:.08em;">@Locale["cat.filter.level"]</div>
+                        <div><label><input type="checkbox" /> @Locale["cat.beginner"]</label></div>
+                        <div><label><input type="checkbox" checked/> @Locale["cat.intermediate"]</label></div>
+                        <div><label><input type="checkbox" /> @Locale["cat.advanced"]</label></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-faint small text-uppercase mb-2" style="letter-spacing:.08em;">@Locale["cat.filter.price"]</div>
+                        <div><label><input type="radio" name="price" /> @(isAr ? "الكل" : "Any")</label></div>
+                        <div><label><input type="radio" name="price" checked/> @Locale["cat.free"]</label></div>
+                        <div><label><input type="radio" name="price" /> @(isAr ? "أقل من 50$" : "Under $50")</label></div>
+                        <div><label><input type="radio" name="price" /> $50 – $100</label></div>
+                        <div><label><input type="radio" name="price" /> @(isAr ? "أكثر من 100$" : "Above $100")</label></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-faint small text-uppercase mb-2" style="letter-spacing:.08em;">@Locale["cat.filter.rating"]</div>
+                        @foreach (var r in new[] { 4.5, 4.0, 3.5 })
+                        {
+                            <div><label><input type="radio" name="rating" /> <span class="stars"><i class="bi bi-star-fill"></i></span> @r &amp; @(isAr ? "أعلى" : "up")</label></div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="text-faint small text-uppercase mb-2" style="letter-spacing:.08em;">@Locale["cat.filter.language"]</div>
+                        <div><label><input type="checkbox" checked/> English</label></div>
+                        <div><label><input type="checkbox" /> العربية</label></div>
+                        <div><label><input type="checkbox" /> Français</label></div>
+                        <div><label><input type="checkbox" /> Español</label></div>
+                    </div>
+
+                    <button class="btn btn-outline-secondary btn-block">@(isAr ? "إعادة تعيين" : "Reset")</button>
+                </div>
+            </div>
+        </div>
+
+        @* COURSE GRID *@
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap" style="gap:.5rem;">
+                <div class="text-muted">@(isAr ? "عرض 1–8 من 1,240 دورة" : "Showing 1–8 of 1,240 courses")</div>
+                <div class="d-flex align-items-center" style="gap:.5rem;">
+                    <span class="text-muted small">@(isAr ? "ترتيب" : "Sort by")</span>
+                    <select class="form-control form-control-sm" style="min-width:180px;">
+                        <option>@(isAr ? "الأكثر شعبية" : "Most popular")</option>
+                        <option>@(isAr ? "الأعلى تقييمًا" : "Top rated")</option>
+                        <option>@(isAr ? "الأحدث" : "Newest")</option>
+                        <option>@(isAr ? "السعر: من الأقل" : "Price: low to high")</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+            @foreach (var c in DemoData.PopularCourses)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card course-card h-100">
+                        <div class="row no-gutters">
+                            <div class="col-5">
+                                <div class="card-thumb m-3" style="height: calc(100% - 1.5rem); background: linear-gradient(135deg, @c.Color, #1e1b4b);">
+                                    @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
+                                    else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
+                                    <i class="bi @c.Icon"></i>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="card-body py-3 pl-0 pr-3 d-flex flex-column h-100">
+                                    <div class="badge-soft mb-2" style="align-self:flex-start;">@c.Category</div>
+                                    <h6 class="mb-2" style="line-height:1.35;">@(isAr ? c.TitleAr : c.TitleEn)</h6>
+                                    <div class="text-muted small mb-2">@c.Instructor · <i class="bi bi-globe mr-1"></i>@c.Language</div>
+                                    <div class="d-flex align-items-center small mb-2" style="gap:.4rem; flex-wrap:wrap;">
+                                        <span class="stars"><i class="bi bi-star-fill"></i></span>
+                                        <strong>@c.Rating.ToString("0.0")</strong>
+                                        <span class="text-faint">(@c.Reviews.ToString("N0"))</span>
+                                        <span class="text-faint">·</span>
+                                        <span class="text-muted"><i class="bi bi-clock"></i> @c.Hours.ToString("0.0")@Locale["cat.hours"]</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                                        <div>
+                                            @if (c.Price == 0)
+                                            { <strong class="text-grad">@Locale["cat.free"]</strong> }
+                                            else
+                                            { <strong>$@c.Price</strong> @if (c.OriginalPrice.HasValue) { <span class="text-faint small ml-2"><del>$@c.OriginalPrice</del></span> } }
+                                        </div>
+                                        <a class="btn btn-primary btn-sm" asp-page="/Courses/Details" asp-route-id="1">@Locale["cat.enroll"]</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+
+            @* PAGINATION *@
+            <nav class="d-flex justify-content-center mt-4" aria-label="Pagination">
+                <ul class="pagination">
+                    <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
+                    <li class="page-item active"><span class="page-link">1</span></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <li class="page-item"><a class="page-link" href="#">155</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    @* DATABASE-DRIVEN COURSES SECTION (preserves existing functionality) *@
+    @if (Model.Courses.Any())
+    {
+        <div class="divider-soft"></div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0">@(isAr ? "دورات من قاعدة البيانات" : "Courses in database")</h4>
+            @if (Model.HasCurrentUser)
+            {
+                <span class="text-muted small">@Locale["common.signedInAs"] <strong>@Model.CurrentUser.Name</strong> (@Model.CurrentUser.Role)</span>
+            }
+        </div>
+        <div class="row">
+            @foreach (var course in Model.Courses)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card course-card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@course.Name</h5>
+                            <p class="card-text flex-grow-1 text-muted">@course.Description</p>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="badge-soft">@course.CourseType</span>
+                                <div>
+                                    @if (Model.IsCurrentUserRole(ArkkanLMS.Core.Types.UserRoleType.Trainee))
+                                    {
+                                        <a class="btn btn-primary btn-sm mr-2" asp-page="/Courses/Register" asp-route-id="@course.Id">@Locale["cat.enroll"]</a>
+                                    }
+                                    else if (!Model.HasCurrentUser)
+                                    {
+                                        <a class="btn btn-primary btn-sm mr-2" asp-page="/Account/Login">@Locale["nav.login"]</a>
+                                    }
+                                    <a class="btn btn-outline-secondary btn-sm" asp-page="/Courses/Details" asp-route-id="@course.Id">@Locale["cat.preview"]</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

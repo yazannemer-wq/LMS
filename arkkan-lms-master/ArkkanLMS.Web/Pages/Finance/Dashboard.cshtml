@@ -1,0 +1,42 @@
+@page
+@model ArkkanLMS.Web.Pages.Finance.DashboardModel
+@{
+    ViewData["Title"] = "Finance workspace";
+    Layout = "_DashboardLayout";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Finance workspace</h1>
+        <div class="text-muted">Track payments and revenue analytics.</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <strong>Payments</strong>
+                    <i class="bi bi-credit-card text-muted"></i>
+                </div>
+                <div class="text-muted small mb-3">Manage payments (demo).</div>
+                <a class="btn btn-outline-secondary btn-sm disabled" href="#">Open payments (demo)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <strong>Analytics</strong>
+                    <i class="bi bi-graph-up text-muted"></i>
+                </div>
+                <div class="text-muted small mb-3">View analytics dashboards.</div>
+                <a class="btn btn-primary btn-sm" asp-page="/Finance/Analytics"><i class="bi bi-arrow-right mr-2"></i>Open</a>
+            </div>
+        </div>
+    </div>
+</div>
+

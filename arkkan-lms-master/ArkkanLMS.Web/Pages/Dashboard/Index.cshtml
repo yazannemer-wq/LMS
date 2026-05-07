@@ -1,0 +1,274 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = Locale["sb.dashboard"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+    string TL(DemoData.DemoLesson l) => isAr ? l.TitleAr : l.TitleEn;
+    string TLC(DemoData.DemoLesson l) => isAr ? l.CourseAr : l.CourseEn;
+    string TA(DemoData.DemoActivity a) => isAr ? a.TextAr : a.TextEn;
+    string TAT(DemoData.DemoActivity a) => isAr ? a.TimeAr : a.TimeEn;
+    string TN(DemoData.DemoNotification n) => isAr ? n.TextAr : n.TextEn;
+    string TNT(DemoData.DemoNotification n) => isAr ? n.TimeAr : n.TimeEn;
+    string TB(DemoData.DemoBooking b) => isAr ? b.TitleAr : b.TitleEn;
+    string TBT(DemoData.DemoBooking b) => isAr ? b.TimeAr : b.TimeEn;
+    string TBI(DemoData.DemoBooking b) => isAr ? b.InstructorAr : b.InstructorEn;
+    string TBG(DemoData.DemoBadge b) => isAr ? b.TitleAr : b.TitleEn;
+    string TC(DemoCourse c) => isAr ? c.TitleAr : c.TitleEn;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <div>
+        <h2 class="mb-1">@Locale["dash.welcome"], @(Model.CurrentUser?.Name ?? "Aisha")</h2>
+        <div class="text-muted">@Locale["dash.subtitle"]</div>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex" style="gap:.5rem;">
+        <a class="btn btn-outline-secondary" asp-page="/Student/Continue"><i class="bi bi-play-circle mr-2" aria-hidden="true"></i>@Locale["dash.continueLearning"]</a>
+        <a class="btn btn-primary" asp-page="/Courses/Index"><i class="bi bi-search mr-2" aria-hidden="true"></i>@Locale["sb.browse"]</a>
+    </div>
+</div>
+
+@* KPIs *@
+<div class="row">
+    @foreach (var k in new[] {
+        ("bi-collection-play", "dash.kpi.enrolled",     "5",    "+2",     true),
+        ("bi-check2-circle",   "dash.kpi.completed",    "47",   "+8",     true),
+        ("bi-award-fill",      "dash.kpi.certificates", "3",    "+1",     true),
+        ("bi-clock-history",   "dash.kpi.studyTime",    "9.4h", "-1.2h",  false),
+    })
+    {
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card kpi-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="text-muted"><i class="bi @k.Item1 mr-2" aria-hidden="true"></i>@Locale[k.Item2]</div>
+                        <span class="@(k.Item5 ? "kpi-trend-up" : "kpi-trend-down") small">
+                            <i class="bi @(k.Item5 ? "bi-arrow-up-right" : "bi-arrow-down-right")"></i> @k.Item4
+                        </span>
+                    </div>
+                    <div class="kpi-value">@k.Item3</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@* Progress + Weekly goal *@
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card chart-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0"><i class="bi bi-graph-up mr-2" aria-hidden="true"></i>@Locale["dash.weeklyProgress"]</h5>
+                    <span class="badge-soft">@Locale["common.demo"]</span>
+                </div>
+                <canvas id="progressChart" height="110"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+        <div class="card kpi-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0"><i class="bi bi-bullseye mr-2" aria-hidden="true"></i>@Locale["dash.weeklyGoal"]</h5>
+                </div>
+                <div class="text-muted small mb-3">8 / 10 @Locale["dash.weeklyGoalSub"]</div>
+                <div class="progress-track mb-3" style="height: 14px;">
+                    <div class="progress-fill" style="width: 80%; height: 100%;"></div>
+                </div>
+                <div class="d-flex justify-content-between text-muted small">
+                    <span><i class="bi bi-fire" style="color:#f97316"></i> @Locale["dash.streak"]: 7</span>
+                    <strong class="text-grad">80%</strong>
+                </div>
+
+                <hr />
+                <h6 class="mb-2"><i class="bi bi-trophy mr-2" aria-hidden="true"></i>@Locale["dash.badges"]</h6>
+                <div class="d-flex flex-wrap" style="gap:.4rem;">
+                    @foreach (var b in DemoData.Badges)
+                    {
+                        <span class="badge-soft" style="background:@b.Color@(b.Earned ? "20" : "08"); color:@(b.Earned ? b.Color : "var(--text-faint)"); border-color:@b.Color@(b.Earned ? "40" : "10");">
+                            <i class="bi @b.Icon mr-1"></i>@TBG(b)
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Continue Learning + Upcoming *@
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card chart-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="bi bi-play-circle mr-2" aria-hidden="true"></i>@Locale["dash.continueLearning"]</h5>
+                    <a class="text-muted small" asp-page="/Student/Continue">@Locale["common.viewAll"] <i class="bi bi-arrow-right"></i></a>
+                </div>
+                @foreach (var l in DemoData.ContinueLessons)
+                {
+                    <div class="d-flex align-items-center mb-3" style="gap:.85rem;">
+                        <div style="width:60px; height:60px; border-radius: 14px; background: linear-gradient(135deg, @l.Color, #1e1b4b); display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                            <i class="bi @l.Icon" style="font-size:1.4rem;"></i>
+                        </div>
+                        <div class="flex-fill" style="min-width:0;">
+                            <div class="font-weight-bold" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@TL(l)</div>
+                            <div class="text-muted small mb-2">@TLC(l) · @l.Duration</div>
+                            <div class="progress-track" style="height:6px;">
+                                <div class="progress-fill" style="width:@(l.Progress)%; height:100%;"></div>
+                            </div>
+                        </div>
+                        <a class="btn btn-outline-secondary btn-sm" asp-page="/Student/Continue">
+                            <i class="bi bi-play-fill" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+        <div class="card chart-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-calendar-event mr-2" aria-hidden="true"></i>@Locale["dash.upcoming"]</h5>
+                @foreach (var b in DemoData.UpcomingClasses)
+                {
+                    <div class="d-flex align-items-start mb-3" style="gap:.65rem;">
+                        <div style="width:38px; height:38px; border-radius:12px; background:@(b.Color)20; color:@b.Color; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">
+                            <i class="bi bi-camera-video"></i>
+                        </div>
+                        <div>
+                            <div class="font-weight-bold">@TB(b)</div>
+                            <div class="text-muted small">@TBT(b) · @TBI(b)</div>
+                        </div>
+                    </div>
+                }
+                <a class="btn btn-outline-secondary btn-block" asp-page="/Student/Calendar"><i class="bi bi-calendar3 mr-2"></i>@Locale["sb.calendar"]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Recommendations *@
+<div class="d-flex justify-content-between align-items-center mt-2 mb-3">
+    <h5 class="mb-0"><i class="bi bi-stars mr-2"></i>@Locale["dash.recommendations"]</h5>
+    <a class="text-muted small" asp-page="/Courses/Index">@Locale["common.viewAll"] <i class="bi bi-arrow-right"></i></a>
+</div>
+<div class="row">
+    @foreach (var c in DemoData.PopularCourses.Take(4))
+    {
+        <div class="col-md-6 col-lg-3 mb-3">
+            <div class="card course-card h-100">
+                <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color, #1e1b4b);">
+                    @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
+                    else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
+                    <i class="bi @c.Icon"></i>
+                </div>
+                <div class="card-body pt-0">
+                    <h6 class="mb-1" style="line-height:1.35;">@TC(c)</h6>
+                    <div class="text-muted small mb-2">@c.Instructor</div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="stars small"><i class="bi bi-star-fill"></i> <strong>@c.Rating.ToString("0.0")</strong></span>
+                        @if (c.Price == 0)
+                        { <strong class="text-grad">@Locale["cat.free"]</strong> }
+                        else
+                        { <strong>$@c.Price</strong> }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@* Activity & Notifications *@
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-activity mr-2" aria-hidden="true"></i>@Locale["dash.activity"]</h5>
+                <ul class="activity-list">
+                    @foreach (var a in DemoData.Activities)
+                    {
+                        <li>
+                            <span class="activity-icon" style="background:@(a.Color)20; color:@a.Color;"><i class="bi @a.Icon"></i></span>
+                            <div class="flex-fill">
+                                <div>@TA(a)</div>
+                                <div class="text-muted small">@TAT(a)</div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-bell mr-2" aria-hidden="true"></i>@Locale["dash.notifications"]</h5>
+                <ul class="activity-list">
+                    @foreach (var n in DemoData.Notifications)
+                    {
+                        <li>
+                            <span class="activity-icon" style="background:@(n.Color)20; color:@n.Color;"><i class="bi @n.Icon"></i></span>
+                            <div class="flex-fill">
+                                <div>@TN(n)</div>
+                                <div class="text-muted small">@TNT(n)</div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+  (function(){
+    const ctx = document.getElementById('progressChart');
+    if (!ctx || !window.Chart) return;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const grid = isDark ? 'rgba(148,163,184,.18)' : 'rgba(148,163,184,.25)';
+    const text = isDark ? '#cbd5e1' : '#475569';
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [
+          {
+            label: 'This week',
+            data: [2, 3, 2, 4, 5, 6, 4],
+            borderColor: '#4f46e5',
+            backgroundColor: 'rgba(79,70,229,.18)',
+            tension: .35,
+            fill: true,
+            pointRadius: 4,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#4f46e5',
+            pointBorderWidth: 2,
+          },
+          {
+            label: 'Last week',
+            data: [1, 2, 3, 2, 3, 4, 3],
+            borderColor: 'rgba(124,58,237,.55)',
+            borderDash: [4,4],
+            backgroundColor: 'transparent',
+            tension: .35,
+            pointRadius: 0,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: text } } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0, color: text }, grid: { color: grid } },
+          x: { ticks: { color: text }, grid: { display: false } }
+        }
+      }
+    });
+  })();
+</script>
+}

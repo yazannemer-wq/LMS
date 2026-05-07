@@ -1,0 +1,79 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.PricingModel
+@{
+    ViewData["Title"] = Locale["nav.pricing"];
+    var isAr = Locale.IsRtl;
+    var plans = new[] {
+        ("bi-rocket-takeoff", "#0ea5e9", "Starter", isAr?"للمتعلّمين الجدد":"For new learners",       "9",
+            isAr ? new[]{"الوصول لمكتبة الدورات","تتبّع التقدّم","شهادات إكمال","مجتمع المنصة"}
+                 : new[]{"Course catalog access","Progress tracking","Completion certificates","Community access"}, false),
+        ("bi-stars",          "#7c3aed", "Pro",     isAr?"للمحترفين الجادّين":"For serious learners",  "29",
+            isAr ? new[]{"كل دورات Starter","تنزيل دون اتصال","مسارات تكيّفية بالـ AI","أولوية الدعم","شهادات غير محدودة"}
+                 : new[]{"Everything in Starter","Offline downloads","AI-adaptive paths","Priority support","Unlimited certificates"}, true),
+        ("bi-shield-check",   "#16a34a", "Business",isAr?"للمؤسسات والشركات":"For teams & companies", "99",
+            isAr ? new[]{"كل دورات Pro","تسجيل الدخول الموحّد (SSO)","تكامل SCIM","سجلات تدقيق","مدير نجاح مخصّص"}
+                 : new[]{"Everything in Pro","SSO (SAML)","SCIM provisioning","Audit logs","Dedicated CSM"}, false),
+    };
+}
+
+<section class="hero text-center" style="padding: 4rem 0 2.5rem;">
+    <div class="container">
+        <span class="hero-eyebrow mb-3"><i class="bi bi-cash-stack"></i> @(isAr ? "خطط بسيطة وشفافة" : "Simple, transparent pricing")</span>
+        <h1 class="display-4 font-weight-bold mt-3 mb-2">@Locale["land.pricing.title"]</h1>
+        <p class="lead mx-auto mb-4">@Locale["land.pricing.subtitle"]</p>
+        <div class="lang-toggle d-inline-flex">
+            <a class="active" href="#">@(isAr ? "شهري" : "Monthly")</a>
+            <a href="#">@(isAr ? "سنوي · وفّر 20%" : "Yearly · save 20%")</a>
+        </div>
+    </div>
+</section>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        @foreach (var (icon, color, name, desc, price, feats, featured) in plans)
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card feature-card h-100 price-card @(featured ? "featured" : "")">
+                    @if (featured)
+                    {
+                        <div class="text-center" style="margin-top:-12px;">
+                            <span class="badge-soft" style="background:var(--grad-brand); color:#fff; border-color:transparent; font-weight:700;">@Locale["land.pricing.popular"]</span>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width:48px; height:48px; border-radius:14px; background:@(color)15; color:@color;">
+                            <i class="bi @icon" style="font-size:1.4rem"></i>
+                        </div>
+                        <h5 class="mb-1">@name</h5>
+                        <p class="text-muted mb-3">@desc</p>
+                        <div class="mb-3">
+                            <span class="price-figure">$@price</span>
+                            <span class="text-muted">@Locale["land.pricing.monthly"]</span>
+                        </div>
+                        <ul class="list-clean mb-4">
+                            @foreach (var f in feats) { <li><i class="bi bi-check-circle-fill"></i> @f</li> }
+                        </ul>
+                        <a class="btn @(featured ? "btn-primary" : "btn-outline-secondary") btn-block" asp-page="/Checkout/Index">
+                            @Locale["land.pricing.choose"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="card feature-card mt-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-9">
+                    <h5 class="mb-1"><i class="bi bi-buildings mr-2"></i>@(isAr ? "هل لديك أكثر من 100 متعلّم؟" : "More than 100 learners?")</h5>
+                    <p class="text-muted mb-0">@(isAr ? "خطة Enterprise مخصّصة مع SSO/SCIM، خصومات حجم، ومدير نجاح." : "Enterprise plan with SSO/SCIM, volume discounts, and a dedicated success manager.")</p>
+                </div>
+                <div class="col-md-3 text-md-right mt-3 mt-md-0">
+                    <a class="btn btn-primary" asp-page="/Contact">@(isAr ? "تواصل مع المبيعات" : "Talk to sales")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+@page
+@model ArkkanLMS.Web.Pages.Admin.PermissionsModel
+@{
+    ViewData["Title"] = "Permissions";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Permissions</h1>
+        <div class="text-muted">System capabilities used to build access-control policies.</div>
+    </div>
+    <a class="btn btn-primary" asp-page="/Admin/AccessControl"><i class="bi bi-shield-check mr-2"></i>Access control</a>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="min-width:220px;">Permission</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var p in Model.Permissions)
+                {
+                    <tr>
+                        <td><code>@p.Key</code></td>
+                        <td class="text-muted">@p.Description</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

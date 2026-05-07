@@ -1,0 +1,71 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.StudentsModel
+@{
+    ViewData["Title"] = Locale["sb.students"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+    var students = new[] {
+        ("Aisha Mansour", "عائشة منصور", "AM", "#4f46e5", "Advanced React", 86, "active"),
+        ("Daniel Park",   "دانيال بارك", "DP", "#7c3aed", "ML A–Z",         62, "active"),
+        ("Rania Said",    "رانيا سعيد",  "RS", "#fb7185", "Figma Master",   94, "completed"),
+        ("Liam Walker",   "ليام ووكر",   "LW", "#0ea5e9", "Cloud Pro",      45, "active"),
+        ("Yara Najjar",   "يارا نجار",   "YN", "#16a34a", "Cybersec Basics",78, "active"),
+        ("Hassan Idris",  "حسن إدريس",  "HI", "#f59e0b", "Advanced React", 18, "stalled"),
+        ("Maya Tarek",    "مايا طارق",  "MT", "#dc2626", "Marketing",       100,"completed"),
+    };
+    string statusLabel(string s) => s switch { "active" => isAr ? "نشِط" : "Active", "completed" => isAr ? "مكتمل" : "Completed", "stalled" => isAr ? "متوقّف" : "Stalled", _ => s };
+    string statusColor(string s) => s switch { "active" => "var(--info)", "completed" => "var(--success)", "stalled" => "var(--warning)", _ => "var(--text-faint)" };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-people mr-2"></i>@Locale["sb.students"]</h2>
+        <div class="text-muted">@(isAr ? "الطلاب المسجّلون عبر دوراتك." : "Students enrolled across your courses.")</div>
+    </div>
+    <div class="d-flex" style="gap:.5rem;">
+        <div class="dashboard-search"><i class="bi bi-search mr-2"></i><input class="form-control form-control-sm" placeholder="@(isAr ? "ابحث..." : "Search...")"/></div>
+        <button class="btn btn-outline-secondary"><i class="bi bi-download mr-2"></i>@(isAr ? "تصدير" : "Export")</button>
+    </div>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="pl-3">@(isAr ? "الطالب" : "Student")</th>
+                    <th>@(isAr ? "الدورة" : "Course")</th>
+                    <th style="width:24%">@(isAr ? "التقدّم" : "Progress")</th>
+                    <th>@(isAr ? "الحالة" : "Status")</th>
+                    <th class="pr-3 text-right"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var s in students)
+            {
+                <tr>
+                    <td class="pl-3">
+                        <div class="d-flex align-items-center" style="gap:.6rem;">
+                            <span class="avatar avatar-sm" style="background:linear-gradient(135deg,@s.Item4,#1e1b4b);">@s.Item3</span>
+                            <strong>@(isAr ? s.Item2 : s.Item1)</strong>
+                        </div>
+                    </td>
+                    <td class="text-muted">@s.Item5</td>
+                    <td>
+                        <div class="progress-track" style="height:8px;">
+                            <div class="progress-fill" style="width:@(s.Item6)%; height:100%;"></div>
+                        </div>
+                        <div class="text-muted small mt-1">@s.Item6%</div>
+                    </td>
+                    <td><span class="badge-soft" style="color:@statusColor(s.Item7); background:@(statusColor(s.Item7))15; border-color:@(statusColor(s.Item7))30;">@statusLabel(s.Item7)</span></td>
+                    <td class="pr-3 text-right">
+                        <a class="btn btn-outline-secondary btn-sm" href="#"><i class="bi bi-chat-dots"></i></a>
+                        <a class="btn btn-primary btn-sm" href="#">@(isAr ? "العرض" : "View")</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

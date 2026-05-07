@@ -1,0 +1,71 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.ReviewsModel
+@{
+    ViewData["Title"] = Locale["sb.reviews"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+    var reviews = new[]{
+        ("Rana M.", "رنا م.", "RM", "#fb7185", 5, isAr?"محتوى ممتاز ومرتّب جدًا. أتمنى المزيد من الأمثلة في القسم الرابع.":"Excellent content and so well organized. Would love more examples in section 4.", "Advanced React", "2d"),
+        ("John K.", "جون ك.",  "JK", "#0ea5e9", 5, isAr?"أفضل دورة على الإطلاق! تعلّمت أكثر من شهور كاملة من الممارسة.":"Best course I've ever taken — learned more than months of practice.", "Advanced React", "3d"),
+        ("Aisha B.","عائشة ب.", "AB", "#4f46e5", 4, isAr?"رائعة، لكن جودة الصوت في الدرس 7 منخفضة قليلًا.":"Great, though audio quality in lesson 7 was a bit low.", "ML A–Z", "5d"),
+        ("Karim S.","كريم س.", "KS", "#7c3aed", 5, isAr?"شرح واضح ومشاريع عملية فعلًا. شكرًا!":"Clear explanations and genuinely practical projects. Thank you!", "Cloud Pro", "1w"),
+        ("Maya T.", "مايا ت.", "MT", "#f59e0b", 5, isAr?"استفدت كثيرًا من قسم الأداء. سأعيد المشاهدة.":"Got a lot out of the performance section. Will rewatch.", "Advanced React", "1w"),
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-star mr-2"></i>@Locale["sb.reviews"]</h2>
+        <div class="text-muted">@(isAr ? "آراء طلابك على دوراتك." : "Feedback from your students.")</div>
+    </div>
+    <div class="d-flex" style="gap:.5rem;">
+        <select class="form-control form-control-sm"><option>@(isAr ? "كل التقييمات" : "All ratings")</option><option>5★</option><option>4★</option><option>≤3★</option></select>
+        <select class="form-control form-control-sm"><option>@(isAr ? "كل الدورات" : "All courses")</option><option>Advanced React</option><option>ML A–Z</option></select>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-4 mb-3">
+        <div class="card kpi-card h-100"><div class="card-body text-center">
+            <div class="kpi-value text-grad" style="font-size:3.5rem;">4.8</div>
+            <div class="stars mb-2"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></div>
+            <div class="text-muted">@(isAr ? "متوسط التقييم من 18,420 مراجعة" : "Average rating across 18,420 reviews")</div>
+        </div></div>
+    </div>
+    <div class="col-md-8 mb-3">
+        <div class="card chart-card h-100"><div class="card-body">
+            <h6 class="mb-3">@(isAr ? "توزيع التقييمات" : "Rating distribution")</h6>
+            @foreach (var (s, w) in new[] { (5, 78), (4, 16), (3, 4), (2, 1), (1, 1) })
+            {
+                <div class="d-flex align-items-center mb-2" style="gap:.6rem;">
+                    <span style="width:32px;"><span class="stars"><i class="bi bi-star-fill"></i></span> @s</span>
+                    <div class="flex-fill progress-track" style="height:8px;"><div class="progress-fill" style="width:@(w)%; height:100%;"></div></div>
+                    <span class="text-muted small">@w%</span>
+                </div>
+            }
+        </div></div>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var r in reviews)
+    {
+        <div class="col-md-6 mb-3">
+            <div class="card feature-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2" style="gap:.65rem;">
+                        <span class="avatar avatar-sm" style="background:linear-gradient(135deg,@r.Item4,#1e1b4b);">@r.Item3</span>
+                        <div class="flex-fill">
+                            <strong>@(isAr ? r.Item2 : r.Item1)</strong>
+                            <div class="text-muted small">@r.Item7 · @r.Item8</div>
+                        </div>
+                        <span class="stars">@for (int i=0;i<r.Item5;i++) {<i class="bi bi-star-fill"></i>}@for (int i=r.Item5;i<5;i++) {<i class="bi bi-star"></i>}</span>
+                    </div>
+                    <p class="mb-2">@r.Item6</p>
+                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-reply mr-2"></i>@(isAr ? "ردّ" : "Reply")</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,13 @@
+@using ArkkanLMS.Web.Localization
+@{
+    var path = Context.Request.Path + Context.Request.QueryString;
+    var nextMode = Locale.Theme == "dark" ? "light" : "dark";
+    var icon = Locale.Theme == "dark" ? "bi-sun" : "bi-moon-stars";
+    var ariaLabel = Locale.Theme == "dark" ? Locale["common.themeLight"] : Locale["common.themeDark"];
+}
+<a href="/theme/@nextMode?returnUrl=@(Uri.EscapeDataString(path))"
+   class="theme-toggle"
+   aria-label="@ariaLabel"
+   title="@ariaLabel">
+    <i class="bi @icon" aria-hidden="true"></i>
+</a>

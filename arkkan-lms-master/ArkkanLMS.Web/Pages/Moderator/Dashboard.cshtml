@@ -1,0 +1,29 @@
+@page
+@model ArkkanLMS.Web.Pages.Moderator.DashboardModel
+@{
+    ViewData["Title"] = "Moderator workspace";
+    Layout = "_DashboardLayout";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Moderator workspace</h1>
+        <div class="text-muted">Review reports and keep discussions healthy.</div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <strong>Moderation</strong>
+                    <i class="bi bi-shield-check text-muted"></i>
+                </div>
+                <div class="text-muted small mb-3">You have permission to moderate comments.</div>
+                <a class="btn btn-outline-secondary btn-sm disabled" href="#">Open moderation queue (demo)</a>
+            </div>
+        </div>
+    </div>
+</div>
+

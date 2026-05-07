@@ -1,0 +1,45 @@
+@page
+@model ArkkanLMS.Web.Pages.Admin.RolesModel
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Roles</h1>
+        <div class="text-muted">Manage role definitions and review assigned permissions.</div>
+    </div>
+    <a class="btn btn-primary" asp-page="/Admin/AccessControl"><i class="bi bi-shield-check mr-2"></i>Access control</a>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="min-width:180px;">Role</th>
+                        <th>Permissions</th>
+                        <th style="width:180px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var r in Model.Roles)
+                {
+                    <tr>
+                        <td><span class="role-chip role-@r.Role.ToString().ToLowerInvariant()">@r.Role</span></td>
+                        <td class="text-muted">@r.PermissionCount</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-secondary" asp-page="/Admin/AccessControl" asp-route-role="@((int)r.Role)">
+                                <i class="bi bi-sliders mr-2"></i>Edit access
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

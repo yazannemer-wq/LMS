@@ -1,0 +1,79 @@
+@page
+@model ArkkanLMS.Web.Pages.Admin.AccessControlModel
+@{
+    ViewData["Title"] = "Access Control";
+    Layout = "_AdminLayout";
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+    <div>
+        <h1 class="h3 mb-1">Access Control</h1>
+        <div class="text-muted">Assign permissions to roles. If a role has any assignments here, they override the default map.</div>
+    </div>
+    <div class="d-flex" style="gap:.5rem;">
+        <a class="btn btn-outline-secondary" asp-page="/Admin/Roles"><i class="bi bi-people mr-2"></i>Roles</a>
+        <a class="btn btn-outline-secondary" asp-page="/Admin/Permissions"><i class="bi bi-key mr-2"></i>Permissions</a>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Toast))
+{
+    <div class="alert alert-success">@Model.Toast</div>
+}
+
+<div class="card feature-card mb-3">
+    <div class="card-body">
+        <form method="get" class="form-inline" style="gap:.75rem;">
+            <label class="text-muted small mb-0" for="roleSelect">Role</label>
+            <select id="roleSelect" name="role" class="form-control">
+                @foreach (var item in Model.RoleOptions)
+                {
+                    <option value="@item.Value" selected="@(item.Value == ((int)Model.SelectedRole).ToString() ? "selected" : null)">@item.Text</option>
+                }
+            </select>
+            <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-arrow-repeat mr-2"></i>Load</button>
+        </form>
+    </div>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body">
+        <form method="post">
+            <input type="hidden" name="role" value="@((int)Model.SelectedRole)" />
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap:.75rem;">
+                <div>
+                    <div class="text-faint small mb-1">Editing</div>
+                    <div class="d-flex align-items-center" style="gap:.5rem;">
+                        <span class="role-chip role-@Model.SelectedRole.ToString().ToLowerInvariant()">@Model.SelectedRole</span>
+                        <span class="text-muted small">@Model.ModeLabel</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap" style="gap:.5rem;">
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-save mr-2"></i>Save</button>
+                    <button class="btn btn-outline-danger" type="submit" name="action" value="reset">
+                        <i class="bi bi-arrow-counterclockwise mr-2"></i>Reset to defaults
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                @foreach (var p in Model.PermissionOptions)
+                {
+                    <div class="col-md-6 col-lg-4 mb-2">
+                        <label class="d-flex align-items-start p-3" style="border:1px solid var(--stroke); border-radius:14px; background: var(--surface-soft); gap:.75rem; cursor:pointer;">
+                            <input type="checkbox" class="mt-1" name="permissions" value="@p.Key" checked="@p.Checked" />
+                            <div style="min-width:0;">
+                                <div class="d-flex align-items-center" style="gap:.5rem;">
+                                    <code>@p.Key</code>
+                                </div>
+                                <div class="text-muted small">@p.Description</div>
+                            </div>
+                        </label>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</div>
+

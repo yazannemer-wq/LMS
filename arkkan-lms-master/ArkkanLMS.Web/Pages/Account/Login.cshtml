@@ -1,0 +1,96 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = Locale["nav.login"];
+    var isAr = Locale.IsRtl;
+}
+
+<section class="hero text-center" style="padding: 3rem 0 1rem;">
+    <div class="container">
+        <span class="hero-eyebrow"><i class="bi bi-shield-check"></i> @(isAr ? "تسجيل دخول آمن" : "Secure sign-in")</span>
+        <h1 class="display-4 font-weight-bold mt-3 mb-2">@(isAr ? "أهلًا بعودتك" : "Welcome back")</h1>
+        <p class="lead">@(isAr ? "اختر حسابًا تجريبيًا أو سجّل دخولك بحساب موجود." : "Pick a demo account or sign in with an existing one.")</p>
+    </div>
+</section>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7 mb-4">
+            <div class="card feature-card">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-key mr-2"></i>@Locale["nav.login"]</h5>
+                    <form method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2"></div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Input.Email" class="text-faint small">@(isAr ? "البريد الإلكتروني" : "Email")</label>
+                            <input asp-for="Input.Email" class="form-control" placeholder="you@example.com" />
+                            <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Input.Password" class="text-faint small">@(isAr ? "كلمة المرور" : "Password")</label>
+                            <input asp-for="Input.Password" class="form-control" type="password" placeholder="••••••••" />
+                            <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <label class="small text-muted"><input type="checkbox" /> @(isAr ? "تذكّرني" : "Remember me")</label>
+                            <a class="small" asp-page="/Account/ForgotPassword">@(isAr ? "نسيت كلمة المرور؟" : "Forgot password?")</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right mr-2"></i>@Locale["nav.login"]</button>
+                    </form>
+                    <div class="text-center mt-3 small">
+                        <span class="text-muted">@(isAr ? "ليس لديك حساب؟" : "Don’t have an account?")</span>
+                        <a asp-page="/Account/Register" class="ml-1">@(isAr ? "إنشاء حساب" : "Create one")</a>
+                    </div>
+                    <div class="text-center my-3 text-muted small">@(isAr ? "أو" : "or")</div>
+                    <div class="row no-gutters">
+                        <div class="col-6 pr-1"><button class="btn btn-outline-secondary btn-block"><i class="bi bi-google mr-2"></i>Google</button></div>
+                        <div class="col-6 pl-1"><button class="btn btn-outline-secondary btn-block"><i class="bi bi-apple mr-2"></i>Apple</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card feature-card h-100">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-people-fill mr-2"></i>@(isAr ? "حسابات تجريبية" : "Demo accounts")</h5>
+                    <p class="text-muted">@(isAr ? "كل حساب يفتح مساحة عمل مختلفة بصلاحيات مختلفة." : "Each account opens a different workspace with different permissions.")</p>
+
+                    @{
+                        var accounts = new[] {
+                            ("Ahmad Admin",   isAr?"أحمد · مدير":"Ahmad · Admin",     "admin@ArkkanLMS.dev",   "admin123",   "#0f172a", "AA", "Admin"),
+                            ("Ali Trainer",   isAr?"علي · مدرّب":"Ali · Trainer",     "trainer@ArkkanLMS.dev", "trainer123", "#10b981", "AT", "Trainer"),
+                            ("Tina Trainee",  isAr?"تينا · طالبة":"Tina · Trainee",   "trainee@ArkkanLMS.dev", "trainee123", "#4f46e5", "TT", "Trainee"),
+                            ("Mona Moderator",isAr?"منى · مشرفة":"Mona · Moderator",  "moderator@ArkkanLMS.dev","moderator123","#f59e0b", "MM", "Moderator"),
+                            ("Sam Support",   isAr?"سام · دعم":"Sam · Support",       "support@ArkkanLMS.dev", "support123", "#06b6d4", "SS", "Support"),
+                            ("Fadi Finance",  isAr?"فادي · مالية":"Fadi · Finance",   "finance@ArkkanLMS.dev", "finance123", "#22c55e", "FF", "Finance"),
+                        };
+                    }
+
+                    @foreach (var (name, label, email, pass, color, ini, role) in accounts)
+                    {
+                        <div class="d-flex align-items-center p-3 mb-2" style="border:1px solid var(--stroke); border-radius:14px; background: var(--surface-soft); gap:.75rem;">
+                            <span class="avatar" style="background: linear-gradient(135deg, @color, #1e1b4b);">@ini</span>
+                            <div class="flex-fill" style="min-width:0;">
+                                <div class="d-flex align-items-center" style="gap:.5rem;">
+                                    <strong>@label</strong>
+                                    <span class="role-chip role-@role.ToLower()">@role</span>
+                                </div>
+                                <div class="text-muted small" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                    <i class="bi bi-envelope mr-1"></i>@email · <i class="bi bi-key ml-2 mr-1"></i><code>@pass</code>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="text-faint small mt-3"><i class="bi bi-info-circle mr-2"></i>@(isAr ? "هذا عرض توضيحي. لا تستخدم هذه الكلمات في الإنتاج." : "Demo only — do not use these credentials in production.")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

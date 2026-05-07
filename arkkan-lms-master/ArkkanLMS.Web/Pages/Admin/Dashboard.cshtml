@@ -1,0 +1,162 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = Locale["sb.overview"];
+    Layout = "_AdminLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <div>
+        <h2 class="mb-1">@Locale["admin.title"]</h2>
+        <div class="text-muted">@Locale["admin.subtitle"]</div>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex" style="gap:.5rem;">
+        <a class="btn btn-outline-secondary" asp-page="/Admin/Reports"><i class="bi bi-flag mr-2"></i>@Locale["sb.reports"]</a>
+        <a class="btn btn-primary" asp-page="/Admin/Users"><i class="bi bi-people mr-2"></i>@Locale["sb.users"]</a>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var k in new[] {
+        ("bi-people-fill",     "admin.kpi.users",    "248,910",  "+4.2%",  true,  "#6366f1"),
+        ("bi-graph-up-arrow",  "admin.kpi.active",   "108,420",  "+12.8%", true,  "#16a34a"),
+        ("bi-cash-stack",      "admin.kpi.revenue",  "$2.84M",   "+8.4%",  true,  "#7c3aed"),
+        ("bi-headset",         "admin.kpi.tickets",  "42",       "-3",     true,  "#f59e0b"),
+    })
+    {
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card kpi-card h-100"><div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="text-muted"><i class="bi @k.Item1 mr-2" style="color:@k.Item6"></i>@Locale[k.Item2]</div>
+                    <span class="@(k.Item5 ? "kpi-trend-up" : "kpi-trend-down") small"><i class="bi @(k.Item5 ? "bi-arrow-up-right" : "bi-arrow-down-right")"></i> @k.Item4</span>
+                </div>
+                <div class="kpi-value">@k.Item3</div>
+            </div></div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card chart-card h-100"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="bi bi-globe mr-2"></i>@Locale["admin.traffic"]</h5>
+                <div class="nav-tabs-pill"><button class="active">7D</button><button>30D</button><button>90D</button></div>
+            </div>
+            <canvas id="adminTrafficChart" height="110"></canvas>
+        </div></div>
+    </div>
+    <div class="col-lg-4 mb-3">
+        <div class="card chart-card h-100"><div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-pie-chart mr-2"></i>@Locale["admin.signups"]</h5>
+            <canvas id="signupsChart" height="160"></canvas>
+            <div class="text-center text-muted small mt-2">@(isAr ? "بحسب الدور" : "By role")</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7 mb-3">
+        <div class="card feature-card h-100"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="bi bi-headset mr-2"></i>@Locale["admin.support"]</h5>
+                <a class="text-muted small" asp-page="/Admin/Reports">@Locale["common.viewAll"] <i class="bi bi-arrow-right"></i></a>
+            </div>
+            <table class="table mb-0">
+                <thead>
+                    <tr><th>@(isAr ? "العنوان" : "Subject")</th><th>@(isAr ? "من" : "From")</th><th>@(isAr ? "خطورة" : "Severity")</th><th>@(isAr ? "حالة" : "Status")</th><th></th></tr>
+                </thead>
+                <tbody>
+                @foreach (var t in DemoData.SupportTickets)
+                {
+                    var sevColor = t.Severity switch { "high" => "var(--danger)", "medium" => "var(--warning)", _ => "var(--text-faint)" };
+                    var stColor  = t.Status   switch { "open" => "var(--info)", "pending" => "var(--warning)", "in_progress" => "var(--brand-1)", _ => "var(--text-faint)" };
+                    <tr>
+                        <td><strong>@(isAr ? t.SubjectAr : t.SubjectEn)</strong></td>
+                        <td class="text-muted">@(isAr ? t.FromAr : t.FromEn)</td>
+                        <td><span class="badge-soft" style="color:@sevColor; background:@(sevColor)15; border-color:@(sevColor)30;">@t.Severity</span></td>
+                        <td><span class="badge-soft" style="color:@stColor; background:@(stColor)15; border-color:@(stColor)30;">@t.Status.Replace("_", " ")</span></td>
+                        <td class="text-right text-faint small">@(isAr ? t.TimeAr : t.TimeEn)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+    <div class="col-lg-5 mb-3">
+        <div class="card feature-card h-100"><div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-flag mr-2"></i>@Locale["admin.queue"]</h5>
+            <div class="admin-stat-row"><span><i class="bi bi-shield-exclamation mr-2 text-warning"></i>@(isAr ? "بلاغات محتوى مفتوحة" : "Open content reports")</span><strong>18</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-patch-question mr-2 text-info"></i>@(isAr ? "طلبات اعتماد مدرّبين" : "Trainer approvals")</span><strong>7</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-cash-stack mr-2 text-success"></i>@(isAr ? "طلبات استرداد" : "Refund requests")</span><strong>3</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-shield-lock mr-2 text-danger"></i>@(isAr ? "تنبيهات أمنية" : "Security alerts")</span><strong>2</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-tags mr-2"></i>@(isAr ? "اقتراح فئات جديدة" : "Suggested categories")</span><strong>5</strong></div>
+            <a class="btn btn-primary btn-block mt-3" asp-page="/Admin/Reports">@(isAr ? "افتح قائمة الانتظار" : "Open queue")</a>
+        </div></div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-3">
+        <div class="card feature-card h-100"><div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-activity mr-2"></i>@(isAr ? "نشاط حديث على المنصة" : "Recent platform activity")</h5>
+            <ul class="activity-list">
+                @foreach (var a in new[] {
+                    ("bi-person-plus", "#16a34a", isAr?"تسجيل 412 مستخدم جديد اليوم":"412 new user signups today",                  "12m"),
+                    ("bi-mortarboard","#4f46e5", isAr?"نُشرت 9 دورات جديدة":"9 new courses published",                                "1h"),
+                    ("bi-flag",       "#dc2626", isAr?"تم تصعيد 3 بلاغات":"3 reports escalated",                                       "2h"),
+                    ("bi-cash-coin",  "#f59e0b", isAr?"إيرادات اليوم تجاوزت $94k":"Today's revenue passed $94k",                       "5h"),
+                    ("bi-shield-lock","#7c3aed", isAr?"تسجيل دخول مشبوه من IP غير معروف":"Suspicious login from unknown IP",            "Yesterday"),
+                })
+                {
+                    <li>
+                        <span class="activity-icon" style="background:@(a.Item2)20; color:@a.Item2;"><i class="bi @a.Item1"></i></span>
+                        <div class="flex-fill">
+                            <div>@a.Item3</div>
+                            <div class="text-muted small">@a.Item4</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div></div>
+    </div>
+    <div class="col-lg-6 mb-3">
+        <div class="card feature-card h-100"><div class="card-body">
+            <h5 class="mb-3"><i class="bi bi-shield-check mr-2"></i>@(isAr ? "صحة المنصّة" : "Platform health")</h5>
+            <div class="admin-stat-row"><span><i class="bi bi-circle-fill text-success mr-2"></i>@(isAr ? "API الأساسي" : "Core API")</span><strong>99.99%</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-circle-fill text-success mr-2"></i>@(isAr ? "تشفير الفيديو" : "Video transcoding")</span><strong>99.96%</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-circle-fill text-warning mr-2"></i>@(isAr ? "خدمة الإيميل" : "Email service")</span><strong>98.40%</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-circle-fill text-success mr-2"></i>@(isAr ? "البحث" : "Search")</span><strong>99.99%</strong></div>
+            <div class="admin-stat-row"><span><i class="bi bi-circle-fill text-success mr-2"></i>CDN</span><strong>100%</strong></div>
+            <div class="text-faint small mt-3">@(isAr ? "آخر تحديث منذ 60 ثانية" : "Last updated 60s ago")</div>
+        </div></div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+  (function(){
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const grid = isDark ? 'rgba(148,163,184,.18)' : 'rgba(148,163,184,.25)';
+    const text = isDark ? '#cbd5e1' : '#475569';
+    const t = document.getElementById('adminTrafficChart');
+    if (t && window.Chart) new Chart(t, {
+      type:'line',
+      data:{ labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+             datasets:[
+               { label: 'Visits', data:[42100,46500,48200,52400,57800,49200,51200], borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,.18)', fill:true, tension:.4, pointRadius:0 },
+               { label: 'Page views', data:[182000,194000,205000,221000,242000,210000,218000], borderColor:'rgba(124,58,237,.7)', backgroundColor:'transparent', tension:.4, pointRadius:0 }
+             ]},
+      options:{ responsive:true, plugins:{legend:{labels:{color:text}}}, scales:{y:{ticks:{color:text}, grid:{color:grid}}, x:{ticks:{color:text}, grid:{display:false}}} }
+    });
+    const s = document.getElementById('signupsChart');
+    if (s && window.Chart) new Chart(s, {
+      type:'doughnut',
+      data:{ labels:['Students','Trainers','Admins'], datasets:[{ data:[92,7,1], backgroundColor:['#4f46e5','#16a34a','#0f172a'], borderWidth:0 }] },
+      options:{ cutout:'62%', plugins:{legend:{position:'bottom', labels:{color:text}}} }
+    });
+  })();
+</script>
+}

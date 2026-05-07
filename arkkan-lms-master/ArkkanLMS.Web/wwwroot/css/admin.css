@@ -1,0 +1,24 @@
+/* Admin-specific tweaks (kept tiny — most styles live in site.css) */
+
+.admin-shell .dashboard-main {
+  background: var(--surface-soft);
+}
+
+.admin-search .form-control {
+  min-width: 360px;
+}
+
+@media (max-width: 992px) {
+  .admin-search .form-control {
+    min-width: 180px;
+  }
+}
+
+.admin-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .55rem 0;
+  border-bottom: 1px dashed var(--stroke);
+}
+.admin-stat-row:last-child { border-bottom: 0; }

@@ -1,0 +1,56 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.FAQModel
+@{
+    ViewData["Title"] = Locale["nav.faq"];
+    var isAr = Locale.IsRtl;
+}
+
+<section class="hero text-center" style="padding: 3.5rem 0 2rem;">
+    <div class="container">
+        <span class="hero-eyebrow"><i class="bi bi-question-circle"></i> @(isAr ? "مركز المساعدة" : "Help center")</span>
+        <h1 class="display-4 font-weight-bold mt-3 mb-2">@Locale["land.faq.title"]</h1>
+        <p class="lead mx-auto" style="max-width: 600px;">@(isAr ? "إجابات سريعة على الأسئلة الأكثر شيوعًا. هل تحتاج المزيد؟ تواصل معنا." : "Quick answers to the most common questions. Need more? Reach out.")</p>
+        <div class="dashboard-search mx-auto mt-3" style="max-width:520px; padding:.5rem 1rem;">
+            <i class="bi bi-search mr-2"></i>
+            <input class="form-control" placeholder="@(isAr ? "ابحث في الأسئلة..." : "Search the FAQ...")" />
+        </div>
+    </div>
+</section>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="accordion" id="faqAccordion">
+                @{ int idx = 0; }
+                @foreach (var f in DemoData.Faqs)
+                {
+                    idx++;
+                    var collapseId = $"faq{idx}";
+                    var headingId = $"faqHead{idx}";
+                    var collapsed = idx == 1 ? "" : "collapsed";
+                    var show = idx == 1 ? "show" : "";
+                    <div class="card feature-card mb-2">
+                        <div class="card-header" id="@headingId" style="background: transparent; border:0;">
+                            <button class="btn btn-ghost btn-block d-flex justify-content-between align-items-center @collapsed" type="button"
+                                    data-toggle="collapse" data-target="#@collapseId" aria-expanded="@(idx == 1 ? "true" : "false")" aria-controls="@collapseId"
+                                    style="font-weight:700;">
+                                <span>@(isAr ? f.QuestionAr : f.QuestionEn)</span>
+                                <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div id="@collapseId" class="collapse @show" aria-labelledby="@headingId" data-parent="#faqAccordion">
+                            <div class="card-body pt-0 text-muted">@(isAr ? f.AnswerAr : f.AnswerEn)</div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="card feature-card mt-4 text-center" style="padding: 2rem 1rem;">
+                <h5 class="mb-2">@(isAr ? "لم تجد إجابتك؟" : "Didn't find what you needed?")</h5>
+                <p class="text-muted mb-3">@(isAr ? "فريق الدعم متاح 24/7." : "Our support team is available 24/7.")</p>
+                <div><a class="btn btn-primary" asp-page="/Contact"><i class="bi bi-envelope mr-2"></i>@Locale["nav.contact"]</a></div>
+            </div>
+        </div>
+    </div>
+</div>

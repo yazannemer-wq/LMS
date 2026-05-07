@@ -1,0 +1,22 @@
+@{
+    var title = (string)(ViewData["EmptyState.Title"] ?? "Nothing here yet");
+    var message = (string)(ViewData["EmptyState.Message"] ?? "When data becomes available, it will show up here.");
+    var icon = (string)(ViewData["EmptyState.Icon"] ?? "bi-inbox");
+    var actionText = (string)ViewData["EmptyState.ActionText"];
+    var actionHref = (string)ViewData["EmptyState.ActionHref"];
+}
+
+<div class="card feature-card">
+    <div class="card-body p-4 p-md-5 text-center">
+        <div class="mb-3" style="font-size:2rem; line-height:1;">
+            <i class="bi @icon"></i>
+        </div>
+        <h3 class="h5 mb-2">@title</h3>
+        <p class="text-muted mb-4">@message</p>
+        @if (!string.IsNullOrWhiteSpace(actionText) && !string.IsNullOrWhiteSpace(actionHref))
+        {
+            <a class="btn btn-primary" href="@actionHref">@actionText</a>
+        }
+    </div>
+</div>
+

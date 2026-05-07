@@ -1,0 +1,62 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.AboutModel
+@{
+    ViewData["Title"] = Locale["nav.about"];
+    var isAr = Locale.IsRtl;
+}
+
+<section class="hero text-center" style="padding: 4rem 0 3rem;">
+    <div class="container">
+        <span class="hero-eyebrow"><i class="bi bi-info-circle"></i> @(isAr ? "عن أركان" : "About ArkkanLMS")</span>
+        <h1 class="display-4 font-weight-bold mt-3 mb-2">@(isAr ? "مبنية لتعلّم العصر الحديث" : "Built for modern learning")</h1>
+        <p class="lead mx-auto" style="max-width: 760px;">@(isAr
+            ? "منصة تعلّم متكاملة عربية الواجهة، ثنائية الاتجاه، تجمع بين الدورات الذاتية والصفوف المباشرة والشهادات الموثّقة."
+            : "An end-to-end LMS — bilingual & RTL-ready — combining self-paced courses, live cohorts, and verifiable credentials.")</p>
+    </div>
+</section>
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3"><div class="kpi-card text-center"><div class="card-body"><div class="kpi-value text-grad">240k</div><div class="text-muted">@(isAr ? "متعلّم" : "Learners")</div></div></div></div>
+        <div class="col-md-3 mb-3"><div class="kpi-card text-center"><div class="card-body"><div class="kpi-value text-grad">1.2k</div><div class="text-muted">@(isAr ? "دورة" : "Courses")</div></div></div></div>
+        <div class="col-md-3 mb-3"><div class="kpi-card text-center"><div class="card-body"><div class="kpi-value text-grad">42</div><div class="text-muted">@(isAr ? "دولة" : "Countries")</div></div></div></div>
+        <div class="col-md-3 mb-3"><div class="kpi-card text-center"><div class="card-body"><div class="kpi-value text-grad">99.99%</div><div class="text-muted">@(isAr ? "وقت تشغيل" : "Uptime")</div></div></div></div>
+    </div>
+
+    <div class="row">
+        @foreach (var f in new[] {
+            ("bi-layers",       "#4f46e5", isAr?"معمارية مرتّبة":"Clean architecture",
+                isAr?"فصل واضح بين Core وApplication وPersistence وWeb لسهولة التطوّر.":
+                     "Clear separation across Core, Application, Persistence, and Web for long-term evolution."),
+            ("bi-shield-lock",  "#7c3aed", isAr?"تجربة بحسب الدور":"Role-based UX",
+                isAr?"طالب، مدرّب، ومسؤول. كل مساحة عمل تتكيّف مع الصلاحيات.":
+                     "Student, Trainer, and Admin workspaces adapt automatically to permissions."),
+            ("bi-globe",        "#0ea5e9", isAr?"دعم RTL أصلي":"Native RTL support",
+                isAr?"عربية كاملة مع تبديل اتجاه فوري وخطوط محسّنة.":
+                     "Full Arabic with instant direction switching and tuned typography."),
+            ("bi-moon-stars",   "#fb7185", isAr?"وضع داكن":"Dark mode",
+                isAr?"يحفظ تفضيلك. دائم في كل مساحة عمل.":
+                     "Persists your preference across every workspace."),
+            ("bi-graph-up",     "#16a34a", isAr?"تحليلات حقيقية":"Real analytics",
+                isAr?"لوحات قياس قابلة للقراءة من أول نظرة، حتى مع البيانات الكثيفة.":
+                     "Readable dashboards even with dense data."),
+            ("bi-stars",        "#f59e0b", isAr?"بـ AI":"AI-augmented",
+                isAr?"اقتراحات تكيّفية للمسارات والاختبارات والتلخيص.":
+                     "Adaptive path suggestions, quiz generation, lesson summaries."),
+        })
+        {
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body">
+                        <div class="d-inline-flex align-items-center justify-content-center mb-3" style="width:48px; height:48px; border-radius:14px; background:@(f.Item2)15; color:@f.Item2;">
+                            <i class="bi @f.Item1" style="font-size:1.4rem"></i>
+                        </div>
+                        <h5 class="mb-2">@f.Item3</h5>
+                        <p class="text-muted mb-0">@f.Item4</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

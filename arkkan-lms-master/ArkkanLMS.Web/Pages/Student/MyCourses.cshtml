@@ -1,0 +1,53 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Student.MyCoursesModel
+@{
+    ViewData["Title"] = Locale["sb.myCourses"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1">@Locale["sb.myCourses"]</h2>
+        <div class="text-muted">@(isAr ? "كل دوراتك المسجّلة في مكان واحد." : "All your enrolled courses in one place.")</div>
+    </div>
+    <div class="nav-tabs-pill">
+        <button class="active">@(isAr ? "قيد التعلّم (5)" : "In progress (5)")</button>
+        <button>@(isAr ? "مكتملة (3)" : "Completed (3)")</button>
+        <button>@(isAr ? "محفوظة (12)" : "Saved (12)")</button>
+    </div>
+</div>
+
+<div class="row">
+@foreach (var c in DemoData.PopularCourses.Take(6))
+{
+    var progress = (c.GetHashCode() & 7) * 12 + 18;
+    if (progress > 100) progress = 100;
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card course-card h-100">
+            <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color, #1e1b4b);">
+                @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
+                <i class="bi @c.Icon"></i>
+            </div>
+            <div class="card-body pt-0 d-flex flex-column">
+                <div class="badge-soft mb-2">@c.Category</div>
+                <h6 class="mb-2" style="line-height:1.35;">@(isAr ? c.TitleAr : c.TitleEn)</h6>
+                <div class="text-muted small mb-2">@c.Instructor · @c.Lessons @Locale["cat.lessons"]</div>
+                <div class="mt-auto">
+                    <div class="d-flex justify-content-between text-muted small mb-1">
+                        <span>@Locale["learn.progress"]</span>
+                        <strong class="text-grad">@progress%</strong>
+                    </div>
+                    <div class="progress-track" style="height:6px;">
+                        <div class="progress-fill" style="width:@(progress)%; height:100%;"></div>
+                    </div>
+                    <a class="btn btn-primary btn-block mt-3" asp-page="/Student/Continue">
+                        <i class="bi bi-play-fill mr-2"></i>@Locale["common.continue"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+</div>

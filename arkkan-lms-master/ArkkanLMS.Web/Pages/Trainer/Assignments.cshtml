@@ -1,0 +1,50 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.AssignmentsModel
+@{
+    ViewData["Title"] = Locale["sb.assignments"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+    var rows = new[]{
+        ("Build a hooks library",      "أنشئ مكتبة Hooks",        "Advanced React",  18, 6,  "graded"),
+        ("Logistic regression notebook","دفتر الانحدار اللوجستي", "ML A–Z",          24, 12, "submitted"),
+        ("Mobile prototype",            "نموذج تطبيق جوّال",       "Figma Master",    36, 9,  "submitted"),
+        ("Threat-model home network",  "نمذجة تهديدات الشبكة",    "Cybersec Basics", 12, 0,  "pending"),
+    };
+    string statusLabel(string s) => s switch { "graded" => isAr ? "مقيّم" : "Graded", "submitted" => isAr ? "مُسلَّم" : "Submitted", "pending" => isAr ? "بانتظار" : "Pending", _ => s };
+    string statusColor(string s) => s switch { "graded" => "var(--success)", "submitted" => "var(--info)", "pending" => "var(--warning)", _ => "var(--text-faint)" };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-ui-checks-grid mr-2"></i>@Locale["sb.assignments"]</h2>
+        <div class="text-muted">@(isAr ? "أنشئ واجبات وقيّم بسرعة." : "Create assignments and grade efficiently.")</div>
+    </div>
+    <button class="btn btn-primary"><i class="bi bi-plus-lg mr-2"></i>@(isAr ? "واجب جديد" : "New assignment")</button>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr><th class="pl-3">@(isAr ? "العنوان" : "Title")</th><th>@(isAr ? "الدورة" : "Course")</th><th>@(isAr ? "تسليمات" : "Submissions")</th><th>@(isAr ? "بانتظار التقييم" : "To grade")</th><th>@(isAr ? "الحالة" : "Status")</th><th></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var r in rows)
+            {
+                <tr>
+                    <td class="pl-3"><strong>@(isAr ? r.Item2 : r.Item1)</strong></td>
+                    <td class="text-muted">@r.Item3</td>
+                    <td>@r.Item4</td>
+                    <td>@if (r.Item5 > 0) {<span class="badge-soft badge-warning">@r.Item5</span>} else {<span class="text-faint">—</span>}</td>
+                    <td><span class="badge-soft" style="color:@statusColor(r.Item6); background:@(statusColor(r.Item6))15; border-color:@(statusColor(r.Item6))30;">@statusLabel(r.Item6)</span></td>
+                    <td class="text-right">
+                        <a class="btn btn-outline-secondary btn-sm" href="#"><i class="bi bi-eye"></i></a>
+                        @if (r.Item5 > 0) {<a class="btn btn-primary btn-sm" href="#">@(isAr ? "قيّم" : "Grade")</a>}
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

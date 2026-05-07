@@ -1,0 +1,219 @@
+@page
+@using ArkkanLMS.Core.Types
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Profile.IndexModel
+@{
+    ViewData["Title"] = Locale["profile.title"];
+    var role = Model.CurrentUser?.Role;
+    Layout = role == UserRoleType.Admin   ? "_AdminLayout"
+           : role == UserRoleType.Trainer ? "_TrainerLayout"
+           : "_StudentLayout";
+    var isAr = Locale.IsRtl;
+    var name = Model.CurrentUser?.Name ?? (isAr ? "زائر" : "Guest");
+    var initials = string.IsNullOrEmpty(name) ? "?" : name.Substring(0, 1).ToUpper();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div class="d-flex align-items-center" style="gap:1rem;">
+        <span class="avatar avatar-xl">@initials</span>
+        <div>
+            <h2 class="mb-1">@name</h2>
+            <div class="text-muted">@(isAr ? "الحساب والتفضيلات" : "Account & preferences") · @role</div>
+        </div>
+    </div>
+    <button class="btn btn-primary"><i class="bi bi-save mr-2"></i>@Locale["profile.save"]</button>
+</div>
+
+<div class="nav-tabs-pill mb-4" id="profileTabs">
+    <button class="active" data-tab="personal">@Locale["profile.tab.personal"]</button>
+    <button data-tab="security">@Locale["profile.tab.security"]</button>
+    <button data-tab="notifications">@Locale["profile.tab.notifications"]</button>
+    <button data-tab="language">@Locale["profile.tab.language"]</button>
+    <button data-tab="billing">@Locale["profile.tab.billing"]</button>
+    <button data-tab="history">@Locale["profile.tab.history"]</button>
+</div>
+
+@* PERSONAL *@
+<div class="row" id="tab-personal">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card h-100"><div class="card-body">
+            <h5 class="mb-3">@Locale["profile.tab.personal"]</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "الاسم" : "Full name")</label><input class="form-control" value="@name" /></div>
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "اسم العرض" : "Display name")</label><input class="form-control" value="@name" /></div>
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "البريد" : "Email")</label><input class="form-control" value="@(Model.CurrentUser?.Email ?? "you@example.com")" /></div>
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "الهاتف" : "Phone")</label><input class="form-control" value="+966 50 000 0000" /></div>
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "الدولة" : "Country")</label><select class="form-control"><option>Saudi Arabia</option><option>UAE</option><option>Egypt</option><option>UK</option><option>USA</option></select></div>
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "المنطقة الزمنية" : "Time zone")</label><select class="form-control"><option>Asia/Riyadh (GMT+3)</option><option>Asia/Dubai (GMT+4)</option><option>Europe/London (GMT+1)</option></select></div>
+                <div class="col-12"><label class="text-faint small">@(isAr ? "نبذة" : "Bio")</label><textarea class="form-control" rows="3">@(isAr ? "متعلّمة شغوفة بالتطوير والتصميم." : "Lifelong learner, building products at the intersection of design and engineering.")</textarea></div>
+            </div>
+        </div></div>
+    </div>
+    <div class="col-lg-4 mb-3">
+        <div class="card feature-card h-100"><div class="card-body">
+            <h5 class="mb-3">@(isAr ? "الصورة الشخصية" : "Profile picture")</h5>
+            <div class="text-center mb-3"><span class="avatar avatar-xl mx-auto">@initials</span></div>
+            <button class="btn btn-outline-secondary btn-block"><i class="bi bi-upload mr-2"></i>@(isAr ? "رفع صورة" : "Upload photo")</button>
+            <button class="btn btn-ghost btn-block text-danger mt-1"><i class="bi bi-trash mr-2"></i>@(isAr ? "حذف" : "Remove")</button>
+        </div></div>
+    </div>
+</div>
+
+@* SECURITY *@
+<div class="row d-none" id="tab-security">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card"><div class="card-body">
+            <h5 class="mb-3">@Locale["profile.tab.security"]</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "كلمة المرور الحالية" : "Current password")</label><input type="password" class="form-control" value="********"/></div>
+                <div class="col-md-6 mb-3"><label class="text-faint small">@(isAr ? "كلمة المرور الجديدة" : "New password")</label><input type="password" class="form-control"/></div>
+            </div>
+            <hr/>
+            <h6 class="mb-2">@(isAr ? "التحقّق بخطوتين" : "Two-factor authentication")</h6>
+            <p class="text-muted">@(isAr ? "أضف طبقة حماية إضافية لحسابك." : "Add an extra layer of protection to your account.")</p>
+            <button class="btn btn-primary"><i class="bi bi-shield-check mr-2"></i>@(isAr ? "تفعيل" : "Enable")</button>
+            <hr/>
+            <h6 class="mb-2">@(isAr ? "الجلسات النشطة" : "Active sessions")</h6>
+            <div class="d-flex justify-content-between align-items-center pb-2"><span><i class="bi bi-laptop mr-2"></i>MacBook · Chrome</span><span class="text-muted small">@(isAr ? "الآن" : "Now")</span></div>
+            <div class="d-flex justify-content-between align-items-center"><span><i class="bi bi-phone mr-2"></i>iPhone · Safari</span><span class="text-muted small">@(isAr ? "قبل ساعتين" : "2h ago")</span></div>
+        </div></div>
+    </div>
+</div>
+
+@* NOTIFICATIONS *@
+<div class="row d-none" id="tab-notifications">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card"><div class="card-body">
+            <h5 class="mb-3">@Locale["profile.tab.notifications"]</h5>
+            @foreach (var n in new[] {
+                (isAr?"دروس جديدة":"New lessons", true),
+                (isAr?"ردود النقاش":"Discussion replies", true),
+                (isAr?"تذكيرات الجلسات":"Session reminders", true),
+                (isAr?"إيصالات الدفع":"Payment receipts", true),
+                (isAr?"تحديثات تسويقية":"Marketing updates", false),
+            })
+            {
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom" style="border-color:var(--stroke);">
+                    <span>@n.Item1</span>
+                    <span class="d-flex" style="gap:.5rem;">
+                        <label><input type="checkbox" @(n.Item2 ? "checked" : "")> Email</label>
+                        <label><input type="checkbox" @(n.Item2 ? "checked" : "")> Push</label>
+                        <label><input type="checkbox"> SMS</label>
+                    </span>
+                </div>
+            }
+        </div></div>
+    </div>
+</div>
+
+@* LANGUAGE *@
+<div class="row d-none" id="tab-language">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card"><div class="card-body">
+            <h5 class="mb-3">@Locale["profile.tab.language"]</h5>
+            <p class="text-muted">@(isAr ? "اختر لغة الواجهة. سيُحفظ التفضيل تلقائيًا." : "Choose your interface language. The preference is saved automatically.")</p>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <a href="/lang/en" class="card glass-soft h-100" style="text-decoration:none; padding:1rem; border:2px solid @(Locale.Culture == "en" ? "var(--brand-1)" : "var(--stroke)");">
+                        <div class="d-flex align-items-center" style="gap:.75rem;">
+                            <span style="font-size:2rem;">🇬🇧</span>
+                            <div>
+                                <strong>English</strong>
+                                <div class="text-muted small">Left to right</div>
+                            </div>
+                            @if (Locale.Culture == "en") { <i class="bi bi-check-circle-fill ml-auto" style="color:var(--brand-1); font-size:1.5rem; margin-inline-start:auto;"></i> }
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a href="/lang/ar" class="card glass-soft h-100" style="text-decoration:none; padding:1rem; border:2px solid @(Locale.Culture == "ar" ? "var(--brand-1)" : "var(--stroke)");">
+                        <div class="d-flex align-items-center" style="gap:.75rem;">
+                            <span style="font-size:2rem;">🇸🇦</span>
+                            <div>
+                                <strong>العربية</strong>
+                                <div class="text-muted small">@(isAr ? "من اليمين إلى اليسار" : "Right to left")</div>
+                            </div>
+                            @if (Locale.Culture == "ar") { <i class="bi bi-check-circle-fill ml-auto" style="color:var(--brand-1); font-size:1.5rem; margin-inline-start:auto;"></i> }
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <hr/>
+            <h6 class="mb-2">@Locale["common.theme"]</h6>
+            <div class="d-flex" style="gap:.5rem;">
+                <a href="/theme/light" class="btn @(Locale.Theme == "light" ? "btn-primary" : "btn-outline-secondary")"><i class="bi bi-sun mr-2"></i>@Locale["common.themeLight"]</a>
+                <a href="/theme/dark" class="btn @(Locale.Theme == "dark" ? "btn-primary" : "btn-outline-secondary")"><i class="bi bi-moon-stars mr-2"></i>@Locale["common.themeDark"]</a>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+@* BILLING *@
+<div class="row d-none" id="tab-billing">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card"><div class="card-body">
+            <h5 class="mb-3">@Locale["profile.tab.billing"]</h5>
+            <div class="d-flex align-items-center justify-content-between p-3 mb-3" style="border:1px solid var(--stroke); border-radius:14px; background:var(--surface-soft);">
+                <div class="d-flex align-items-center" style="gap:1rem;">
+                    <i class="bi bi-credit-card-2-front-fill" style="font-size:1.6rem; color:var(--brand-1)"></i>
+                    <div>
+                        <strong>Visa •••• 4242</strong>
+                        <div class="text-muted small">@(isAr ? "تنتهي 12/27" : "Expires 12/27")</div>
+                    </div>
+                </div>
+                <span class="badge-soft badge-success">@(isAr ? "افتراضية" : "Default")</span>
+            </div>
+            <button class="btn btn-outline-secondary"><i class="bi bi-plus-lg mr-2"></i>@(isAr ? "إضافة طريقة دفع" : "Add payment method")</button>
+            <hr/>
+            <h6 class="mb-2">@(isAr ? "الفواتير الأخيرة" : "Recent invoices")</h6>
+            <table class="table mb-0">
+                <thead><tr><th>@(isAr ? "التاريخ" : "Date")</th><th>@(isAr ? "الوصف" : "Description")</th><th>@(isAr ? "المبلغ" : "Amount")</th><th></th></tr></thead>
+                <tbody>
+                    <tr><td>@(isAr ? "1 إبريل 2026" : "Apr 1, 2026")</td><td>Pro plan · monthly</td><td>$19.00</td><td class="text-right"><a href="#"><i class="bi bi-download"></i></a></td></tr>
+                    <tr><td>@(isAr ? "1 مارس 2026" : "Mar 1, 2026")</td><td>Pro plan · monthly</td><td>$19.00</td><td class="text-right"><a href="#"><i class="bi bi-download"></i></a></td></tr>
+                    <tr><td>@(isAr ? "12 فبراير 2026" : "Feb 12, 2026")</td><td>Course: Advanced React</td><td>$79.00</td><td class="text-right"><a href="#"><i class="bi bi-download"></i></a></td></tr>
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+</div>
+
+@* HISTORY *@
+<div class="row d-none" id="tab-history">
+    <div class="col-lg-12 mb-3">
+        <div class="card feature-card"><div class="card-body">
+            <h5 class="mb-3">@Locale["profile.tab.history"]</h5>
+            <ul class="activity-list">
+                @foreach (var a in DemoData.Activities)
+                {
+                    <li>
+                        <span class="activity-icon" style="background:@(a.Color)20; color:@a.Color;"><i class="bi @a.Icon"></i></span>
+                        <div class="flex-fill">
+                            <div>@(isAr ? a.TextAr : a.TextEn)</div>
+                            <div class="text-muted small">@(isAr ? a.TimeAr : a.TimeEn)</div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div></div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+  (function(){
+    document.querySelectorAll('#profileTabs button[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#profileTabs button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        ['personal','security','notifications','language','billing','history'].forEach(t => {
+          const el = document.getElementById('tab-' + t);
+          if (el) el.classList.toggle('d-none', t !== btn.dataset.tab);
+        });
+      });
+    });
+  })();
+</script>
+}

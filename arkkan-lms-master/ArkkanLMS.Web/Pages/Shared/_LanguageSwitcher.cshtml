@@ -1,0 +1,10 @@
+@using ArkkanLMS.Web.Localization
+@{
+    var path = Context.Request.Path + Context.Request.QueryString;
+    var enHref = $"/lang/en?returnUrl={Uri.EscapeDataString(path)}";
+    var arHref = $"/lang/ar?returnUrl={Uri.EscapeDataString(path)}";
+}
+<div class="lang-toggle" role="group" aria-label="Language">
+    <a href="@enHref" class="@(Locale.Culture == "en" ? "active" : "")" aria-current="@(Locale.Culture == "en" ? "true" : "false")" lang="en">EN</a>
+    <a href="@arHref" class="@(Locale.Culture == "ar" ? "active" : "")" aria-current="@(Locale.Culture == "ar" ? "true" : "false")" lang="ar">العربية</a>
+</div>

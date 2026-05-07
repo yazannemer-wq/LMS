@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ArkkanLMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+</head>
+<body class="min-vh-100 app-shell">
+    @using ArkkanLMS.Core.Entities
+    @using ArkkanLMS.Core.Types
+    @inject ArkkanLMS.Persistence.AppDbContext AppDbContext
+    @{
+        User currentUser = null;
+        if (Context.User.Identity?.IsAuthenticated == true)
+        {
+            var userIdValue = Context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdValue, out int id))
+            {
+                currentUser = AppDbContext.Users.Find(id);
+            }
+        }
+    }
+
+    <div class="dashboard-shell">
+        <aside class="dashboard-sidebar p-3">
+            <div class="d-flex align-items-center mb-3">
+                <a class="navbar-brand font-weight-bold d-flex align-items-center mb-0" asp-area="" asp-page="/Index">
+                    <span class="brand-mark mr-2" aria-hidden="true"></span>
+                    ArkkanLMS
+                </a>
+            </div>
+
+            <div class="sidebar-heading">Navigation</div>
+            <nav class="nav flex-column sidebar">
+                <a class="nav-link" asp-page="/Courses/Index"><i class="bi bi-journal-bookmark mr-2" aria-hidden="true"></i>Course catalog</a>
+
+                @if (currentUser?.Role == UserRoleType.Trainee)
+                {
+                    <a class="nav-link" asp-page="/Dashboard/Index"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>Student dashboard</a>
+                    <a class="nav-link" asp-page="/Bookings/Index"><i class="bi bi-ticket-perforated mr-2" aria-hidden="true"></i>My bookings</a>
+                }
+                @if (currentUser?.Role == UserRoleType.Trainer)
+                {
+                    <a class="nav-link" asp-page="/Instructor/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>Instructor dashboard</a>
+                    <a class="nav-link" asp-page="/Trainer/Sessions"><i class="bi bi-calendar-week mr-2" aria-hidden="true"></i>Sessions</a>
+                }
+                @if (currentUser?.Role == UserRoleType.Admin)
+                {
+                    <a class="nav-link" asp-page="/Admin/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>Admin dashboard</a>
+                    <a class="nav-link" asp-page="/Admin/Users"><i class="bi bi-shield-lock mr-2" aria-hidden="true"></i>Users</a>
+                    <a class="nav-link" asp-area="Admin" asp-page="/Authors/Index"><i class="bi bi-feather mr-2" aria-hidden="true"></i>Authors</a>
+                }
+                @if (currentUser?.Role == UserRoleType.Finance)
+                {
+                    <a class="nav-link" asp-page="/Finance/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>Finance dashboard</a>
+                    <a class="nav-link" asp-page="/Finance/Payments"><i class="bi bi-credit-card mr-2" aria-hidden="true"></i>Payments</a>
+                    <a class="nav-link" asp-page="/Finance/Analytics"><i class="bi bi-graph-up mr-2" aria-hidden="true"></i>Analytics</a>
+                }
+                @if (currentUser?.Role == UserRoleType.Support)
+                {
+                    <a class="nav-link" asp-page="/Support/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>Support dashboard</a>
+                    <a class="nav-link" asp-page="/Admin/Users"><i class="bi bi-people mr-2" aria-hidden="true"></i>Users</a>
+                    <a class="nav-link" asp-page="/Admin/TrainerApproval"><i class="bi bi-patch-check mr-2" aria-hidden="true"></i>Trainer approvals</a>
+                }
+                @if (currentUser?.Role == UserRoleType.Moderator)
+                {
+                    <a class="nav-link" asp-page="/Moderator/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>Moderator dashboard</a>
+                }
+
+                <div class="sidebar-heading mt-3">Support</div>
+                <a class="nav-link" asp-page="/FAQ"><i class="bi bi-question-circle mr-2" aria-hidden="true"></i>FAQ</a>
+                <a class="nav-link" asp-page="/Contact"><i class="bi bi-envelope mr-2" aria-hidden="true"></i>Contact</a>
+            </nav>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-topbar navbar-glass border-bottom">
+                <div class="container-fluid py-2 px-3 d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="d-none d-md-flex align-items-center dashboard-search">
+                            <i class="bi bi-search mr-2" aria-hidden="true"></i>
+                            <input class="form-control form-control-sm" placeholder="Search courses, lessons, users…" aria-label="Search" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-secondary btn-sm mr-2" type="button" title="Notifications" aria-label="Notifications">
+                            <i class="bi bi-bell" aria-hidden="true"></i>
+                        </button>
+
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="profileMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bi bi-person-circle mr-2" aria-hidden="true"></i>
+                                @(currentUser?.Name ?? "Guest")
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profileMenu">
+                                <a class="dropdown-item" asp-page="/Profile/Index"><i class="bi bi-gear mr-2" aria-hidden="true"></i>Profile & settings</a>
+                                <div class="dropdown-divider"></div>
+                                @if (currentUser != null)
+                                {
+                                    <a class="dropdown-item" asp-page="/Account/Logout"><i class="bi bi-box-arrow-right mr-2" aria-hidden="true"></i>Logout</a>
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item" asp-page="/Account/Login"><i class="bi bi-box-arrow-in-right mr-2" aria-hidden="true"></i>Login</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main role="main" class="p-3 p-md-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

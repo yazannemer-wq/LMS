@@ -1,0 +1,55 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.LiveSessionsModel
+@{
+    ViewData["Title"] = Locale["sb.liveSessions"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+    var sessions = new[] {
+        ("System design Q&A",  "أسئلة هندسة الأنظمة",   "Today 19:00",          "اليوم 19:00",        "Advanced React", 124, "live"),
+        ("ML project review",  "مراجعة مشروع ML",       "Tomorrow 17:30",       "غدًا 17:30",         "ML A–Z",          82,  "scheduled"),
+        ("Figma variants",     "متغيّرات Figma",         "Fri 16:00",            "الجمعة 16:00",       "Figma Master",   141, "scheduled"),
+        ("Cloud security AMA", "أسئلة وأجوبة أمن سحابي","Last week",            "الأسبوع الماضي",     "Cloud Pro",       96,  "ended"),
+    };
+    string statusLabel(string s) => s switch { "live" => isAr ? "مباشر الآن" : "Live now", "scheduled" => isAr ? "مجدولة" : "Scheduled", "ended" => isAr ? "انتهت" : "Ended", _ => s };
+    string statusColor(string s) => s switch { "live" => "var(--danger)", "scheduled" => "var(--brand-1)", "ended" => "var(--text-faint)", _ => "var(--text-faint)" };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-camera-video mr-2"></i>@Locale["sb.liveSessions"]</h2>
+        <div class="text-muted">@(isAr ? "أنشئ صفوفًا مباشرة، ادعُ الطلاب، وتسجيل تلقائي." : "Schedule live classes, invite cohorts, with automatic recording.")</div>
+    </div>
+    <button class="btn btn-primary"><i class="bi bi-plus-lg mr-2"></i>@(isAr ? "جدولة جلسة" : "Schedule session")</button>
+</div>
+
+<div class="row">
+    @foreach (var s in sessions)
+    {
+        <div class="col-lg-6 mb-3">
+            <div class="card feature-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h5 class="mb-0">@(isAr ? s.Item2 : s.Item1)</h5>
+                        <span class="badge-soft" style="color:@statusColor(s.Item7); background:@(statusColor(s.Item7))15; border-color:@(statusColor(s.Item7))30;">
+                            @if (s.Item7 == "live") {<span style="width:8px; height:8px; background:var(--danger); border-radius:999px; display:inline-block; margin-inline-end:.25rem; animation:ringPulse 1.5s infinite;"></span>}
+                            @statusLabel(s.Item7)
+                        </span>
+                    </div>
+                    <div class="text-muted mb-3"><i class="bi bi-calendar-event mr-2"></i>@(isAr ? s.Item4 : s.Item3) · @s.Item5</div>
+                    <div class="d-flex align-items-center" style="gap:.5rem;">
+                        <span class="badge-soft"><i class="bi bi-people mr-1"></i>@s.Item6 @(isAr ? "مسجّل" : "registered")</span>
+                        <span class="badge-soft"><i class="bi bi-camera-video mr-1"></i>Zoom</span>
+                        <span class="badge-soft"><i class="bi bi-record-circle mr-1"></i>@(isAr ? "سيُسجَّل" : "Recorded")</span>
+                    </div>
+                    <div class="mt-3 d-flex" style="gap:.5rem;">
+                        @if (s.Item7 == "live") { <button class="btn btn-primary"><i class="bi bi-broadcast mr-2"></i>@(isAr ? "بدء البث" : "Go live")</button> }
+                        else if (s.Item7 == "ended") { <button class="btn btn-outline-secondary"><i class="bi bi-play-circle mr-2"></i>@(isAr ? "شاهد التسجيل" : "Watch recording")</button> }
+                        else { <button class="btn btn-outline-secondary"><i class="bi bi-pencil mr-2"></i>@(isAr ? "تحرير" : "Edit")</button> }
+                        <button class="btn btn-outline-secondary"><i class="bi bi-link-45deg"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

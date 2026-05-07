@@ -1,0 +1,47 @@
+@page
+@model ArkkanLMS.Web.Pages.Courses.RegisterModel
+@{
+    ViewData["Title"] = "Register for Course";
+}
+
+<h1>Register for Course</h1>
+
+@if (!Model.HasCurrentUser)
+{
+    <div class="alert alert-warning">Please sign in first. <a asp-page="/Account/Login">Log in</a></div>
+}
+else if (!Model.IsCurrentUserRole(ArkkanLMS.Core.Types.UserRoleType.Trainee))
+{
+    <div class="alert alert-danger">Only trainees can register for a course.</div>
+}
+else
+{
+    <div class="mb-3">
+        <h4>@Model.Course.Name</h4>
+        <p>@Model.Course.Description</p>
+        <p><strong>Type:</strong> @Model.Course.CourseType</p>
+    </div>
+
+    <form method="post">
+        <input type="hidden" asp-for="CourseId" />
+
+        <div class="form-group">
+            <label asp-for="SelectedSessionId">Choose a class session (optional)</label>
+            <select asp-for="SelectedSessionId" class="form-control">
+                <option value="">Choose a session</option>
+                @foreach (var session in Model.Sessions)
+                {
+                    <option value="@session.Id">@session.Title - @session.StartTime.ToLocalTime():g</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Price</label>
+            <input class="form-control" readonly value="@Model.Price.ToString("C")" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Book Course</button>
+    </form>
+}
+

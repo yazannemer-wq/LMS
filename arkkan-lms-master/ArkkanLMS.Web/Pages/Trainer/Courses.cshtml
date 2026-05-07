@@ -1,0 +1,62 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.CoursesModel
+@{
+    ViewData["Title"] = Locale["sb.myCourses"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1">@Locale["sb.myCourses"]</h2>
+        <div class="text-muted">@(isAr ? "كل الدورات التي تنشرها." : "All the courses you publish.")</div>
+    </div>
+    <a class="btn btn-primary" asp-page="/Trainer/Builder"><i class="bi bi-plus-lg mr-2"></i>@Locale["sb.createCourse"]</a>
+</div>
+
+<div class="card feature-card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="pl-3">@(isAr ? "الدورة" : "Course")</th>
+                    <th>@(isAr ? "الطلاب" : "Students")</th>
+                    <th>@(isAr ? "الإيرادات" : "Revenue")</th>
+                    <th>@(isAr ? "التقييم" : "Rating")</th>
+                    <th>@(isAr ? "الحالة" : "Status")</th>
+                    <th class="pr-3 text-right"></th>
+                </tr>
+            </thead>
+            <tbody>
+            @{ int i = 0; }
+            @foreach (var c in DemoData.PopularCourses.Take(5))
+            {
+                i++;
+                var status = i == 5 ? ("draft", isAr ? "مسوّدة" : "Draft", "var(--warning)") : ("published", isAr ? "منشورة" : "Published", "var(--success)");
+                <tr>
+                    <td class="pl-3">
+                        <div class="d-flex align-items-center" style="gap:.6rem;">
+                            <span style="width:42px; height:42px; border-radius:10px; background:linear-gradient(135deg,@c.Color,#1e1b4b); color:#fff; display:inline-flex; align-items:center; justify-content:center;">
+                                <i class="bi @c.Icon"></i>
+                            </span>
+                            <div>
+                                <strong>@(isAr ? c.TitleAr : c.TitleEn)</strong>
+                                <div class="text-muted small">@c.Category · @c.Lessons @Locale["cat.lessons"]</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><strong>@c.Students.ToString("N0")</strong></td>
+                    <td>$@((c.Students * (double)c.Price / 1000).ToString("N0"))k</td>
+                    <td><span class="stars"><i class="bi bi-star-fill"></i></span> @c.Rating.ToString("0.0") <span class="text-faint small">(@c.Reviews.ToString("N0"))</span></td>
+                    <td><span class="badge-soft" style="color:@status.Item3; background:@(status.Item3)15; border-color:@(status.Item3)30;">@status.Item2</span></td>
+                    <td class="pr-3 text-right">
+                        <a class="btn btn-outline-secondary btn-sm" asp-page="/Trainer/Analytics"><i class="bi bi-bar-chart"></i></a>
+                        <a class="btn btn-primary btn-sm" asp-page="/Trainer/Builder">@(isAr ? "تحرير" : "Edit")</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

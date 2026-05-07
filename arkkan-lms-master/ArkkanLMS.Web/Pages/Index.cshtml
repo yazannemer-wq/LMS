@@ -1,0 +1,357 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model IndexModel
+@{
+    ViewData["Title"] = Locale["nav.home"];
+    var isAr = Locale.IsRtl;
+    string T(DemoCourse c) => isAr ? c.TitleAr : c.TitleEn;
+    string TI(DemoInstructor i) => isAr ? i.NameAr : i.Name;
+    string TIT(DemoInstructor i) => isAr ? i.TitleAr : i.TitleEn;
+    string TT(DemoTestimonial t) => isAr ? t.TextAr : t.TextEn;
+    string TTR(DemoTestimonial t) => isAr ? t.RoleAr : t.Role;
+    string TFQ(DemoFaq f) => isAr ? f.QuestionAr : f.QuestionEn;
+    string TFA(DemoFaq f) => isAr ? f.AnswerAr : f.AnswerEn;
+}
+
+@* ============= HERO ============= *@
+<section class="hero text-center">
+    <div class="container">
+        <span class="hero-eyebrow mb-3"><i class="bi bi-stars" aria-hidden="true"></i> @Locale["land.eyebrow"]</span>
+        <h1 class="display-4 font-weight-bold mb-3 mt-3">
+            @Locale["land.heroTitle"]
+        </h1>
+        <p class="lead mx-auto mb-4">@Locale["land.heroSubtitle"]</p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center" style="gap:.75rem;">
+            <a class="btn btn-primary btn-lg px-5" asp-area="" asp-page="/Courses/Index">
+                <i class="bi bi-rocket-takeoff mr-2" aria-hidden="true"></i>@Locale["land.cta.start"]
+            </a>
+            <a class="btn btn-outline-secondary btn-lg px-5" asp-area="" asp-page="/Courses/Index">
+                <i class="bi bi-play-circle mr-2" aria-hidden="true"></i>@Locale["land.cta.watch"]
+            </a>
+        </div>
+
+        @* Trust strip *@
+        <div class="container mt-5">
+            <div class="text-faint small text-uppercase mb-3" style="letter-spacing:.12em;">@(isAr ? "موثوقة من قبل فِرَق في" : "Trusted by teams at")</div>
+            <div class="d-flex flex-wrap justify-content-center align-items-center" style="gap:2rem; opacity:.65;">
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem;">stripe</span>
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem;">notion</span>
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem;">linear</span>
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem;">vercel</span>
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem;">figma</span>
+                <span style="font-family:var(--font-display); font-weight:800; font-size:1.1rem;">shopify</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ============= STATS ============= *@
+<section class="section-tight">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="kpi-card h-100">
+                    <div class="card-body">
+                        <div class="kpi-value text-grad">240k+</div>
+                        <div class="text-muted">@Locale["land.stats.learners"]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="kpi-card h-100">
+                    <div class="card-body">
+                        <div class="kpi-value text-grad">1,240</div>
+                        <div class="text-muted">@Locale["land.stats.courses"]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="kpi-card h-100">
+                    <div class="card-body">
+                        <div class="kpi-value text-grad">820</div>
+                        <div class="text-muted">@Locale["land.stats.instructors"]</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="kpi-card h-100">
+                    <div class="card-body">
+                        <div class="kpi-value text-grad">4.9 / 5</div>
+                        <div class="text-muted">@Locale["land.stats.satisfaction"]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ============= FEATURES ============= *@
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">@(isAr ? "المنصة" : "Platform")</span>
+            <h2 class="mt-3">@Locale["land.features.title"]</h2>
+            <p class="text-muted lead mx-auto" style="max-width: 36rem;">@Locale["land.features.subtitle"]</p>
+        </div>
+        <div class="row">
+            @foreach (var f in new[] {
+                ("bi-stars",            "#4f46e5", "land.feature.adaptive",   "land.feature.adaptiveDesc"),
+                ("bi-camera-video",     "#0ea5e9", "land.feature.live",       "land.feature.liveDesc"),
+                ("bi-patch-check-fill", "#16a34a", "land.feature.certs",      "land.feature.certsDesc"),
+                ("bi-easel2",           "#fb7185", "land.feature.studio",     "land.feature.studioDesc"),
+                ("bi-people-fill",      "#f59e0b", "land.feature.community",  "land.feature.communityDesc"),
+                ("bi-shield-lock",      "#7c3aed", "land.feature.enterprise", "land.feature.enterpriseDesc"),
+            })
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body">
+                            <div class="d-inline-flex align-items-center justify-content-center mb-3"
+                                 style="width:48px; height:48px; border-radius:14px; background:@(f.Item2)15; color:@f.Item2;">
+                                <i class="bi @f.Item1" style="font-size:1.4rem" aria-hidden="true"></i>
+                            </div>
+                            <h5 class="mb-2">@Locale[f.Item3]</h5>
+                            <p class="text-muted mb-0">@Locale[f.Item4]</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* ============= POPULAR COURSES ============= *@
+<section class="section-tight">
+    <div class="container">
+        <div class="d-flex align-items-end justify-content-between mb-4 flex-wrap" style="gap:1rem;">
+            <div>
+                <span class="section-eyebrow">@(isAr ? "المكتبة" : "Catalog")</span>
+                <h2 class="mt-3 mb-1">@Locale["land.popular.title"]</h2>
+                <p class="text-muted mb-0">@Locale["land.popular.subtitle"]</p>
+            </div>
+            <a class="btn btn-outline-secondary" asp-page="/Courses/Index">
+                @Locale["common.viewAll"] <i class="bi bi-arrow-right ml-2" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="row">
+            @foreach (var c in DemoData.PopularCourses)
+            {
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card course-card h-100">
+                        <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color 0%, #1e1b4b 100%);">
+                            @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
+                            else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
+                            <i class="bi @c.Icon" aria-hidden="true"></i>
+                        </div>
+                        <div class="card-body pt-0 d-flex flex-column">
+                            <div class="badge-soft mb-2">@c.Category</div>
+                            <h6 class="mb-2" style="min-height:3rem; line-height:1.35;">@T(c)</h6>
+                            <div class="text-muted small mb-2">@c.Instructor</div>
+                            <div class="d-flex align-items-center mb-2" style="gap:.4rem;">
+                                <span class="stars">
+                                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                                </span>
+                                <strong>@c.Rating.ToString("0.0")</strong>
+                                <span class="text-faint small">(@c.Reviews.ToString("N0"))</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <div>
+                                    @if (c.Price == 0)
+                                    {
+                                        <strong class="text-grad">@Locale["cat.free"]</strong>
+                                    }
+                                    else
+                                    {
+                                        <strong>$@c.Price</strong>
+                                        @if (c.OriginalPrice.HasValue)
+                                        {
+                                            <span class="text-faint small ml-2"><del>$@c.OriginalPrice</del></span>
+                                        }
+                                    }
+                                </div>
+                                <span class="text-muted small"><i class="bi bi-clock mr-1"></i>@c.Hours.ToString("0.0")@Locale["cat.hours"]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* ============= INSTRUCTORS ============= *@
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">@(isAr ? "المدرّبون" : "Instructors")</span>
+            <h2 class="mt-3">@Locale["land.instructors.title"]</h2>
+            <p class="text-muted lead mx-auto" style="max-width: 36rem;">@Locale["land.instructors.subtitle"]</p>
+        </div>
+        <div class="row">
+            @foreach (var i in DemoData.TopInstructors)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card author-card h-100">
+                        <div class="card-body d-flex align-items-center" style="gap:1rem;">
+                            <span class="avatar avatar-lg" style="background: linear-gradient(135deg, @i.Color, #1e1b4b);">@i.Initials</span>
+                            <div class="flex-fill">
+                                <h6 class="mb-1">@TI(i)</h6>
+                                <div class="text-muted small mb-2">@TIT(i)</div>
+                                <div class="d-flex align-items-center" style="gap:.6rem; flex-wrap:wrap;">
+                                    <span class="badge-soft"><i class="bi bi-star-fill stars"></i> @i.Rating.ToString("0.0")</span>
+                                    <span class="badge-soft"><i class="bi bi-people"></i> @i.Students.ToString("N0")</span>
+                                    <span class="badge-soft"><i class="bi bi-collection-play"></i> @i.Courses</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* ============= TESTIMONIALS ============= *@
+<section class="section-tight">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">@(isAr ? "قصص نجاح" : "Stories")</span>
+            <h2 class="mt-3">@Locale["land.testimonials.title"]</h2>
+            <p class="text-muted lead mx-auto" style="max-width: 36rem;">@Locale["land.testimonials.subtitle"]</p>
+        </div>
+        <div class="row">
+            @foreach (var t in DemoData.Testimonials)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card feature-card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="stars mb-3">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            </div>
+                            <p class="mb-3" style="font-size:.98rem;">“@TT(t)”</p>
+                            <div class="d-flex align-items-center mt-auto" style="gap:.65rem;">
+                                <span class="avatar avatar-sm" style="background: linear-gradient(135deg, @t.Color, #1e1b4b);">@t.Initials</span>
+                                <div>
+                                    <div class="font-weight-bold">@t.Name</div>
+                                    <div class="text-muted small">@TTR(t)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* ============= PRICING ============= *@
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">@(isAr ? "الأسعار" : "Pricing")</span>
+            <h2 class="mt-3">@Locale["land.pricing.title"]</h2>
+            <p class="text-muted lead mx-auto" style="max-width: 36rem;">@Locale["land.pricing.subtitle"]</p>
+        </div>
+        <div class="row justify-content-center">
+            @{ var plans = new[] {
+                ("Free",       "0",  isAr ? "للأفراد للاستكشاف" : "For curious learners",
+                    isAr ? new[] { "وصول للدورات المجانية", "حدّ 5 شهادات", "مجتمع المنصة" }
+                         : new[] { "Access to free courses", "5 free certificates", "Community access" }, false),
+                ("Pro",        "19", isAr ? "للمحترفين الجادّين" : "For serious learners",
+                    isAr ? new[] { "كل الدورات بدون قيود", "شهادات غير محدودة", "تنزيل دون اتصال", "أولوية الدعم" }
+                         : new[] { "Unlimited courses", "Unlimited certificates", "Offline downloads", "Priority support" }, true),
+                ("Enterprise", "49", isAr ? "للفرق والمؤسسات" : "For teams & companies",
+                    isAr ? new[] { "تسجيل الدخول الموحّد (SSO)", "تكامل SCIM", "سجلات تدقيق", "مدير نجاح مخصّص" }
+                         : new[] { "SSO & SCIM", "Audit logs", "Custom roles", "Dedicated CSM" }, false),
+            }; }
+            @foreach (var (name, price, sub, feats, featured) in plans)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card feature-card h-100 price-card @(featured ? "featured" : "")">
+                        @if (featured)
+                        {
+                            <div class="text-center" style="margin-top:-12px;">
+                                <span class="badge-soft" style="background:var(--grad-brand); color:#fff; border-color:transparent; font-weight:700;">@Locale["land.pricing.popular"]</span>
+                            </div>
+                        }
+                        <div class="card-body">
+                            <h5 class="mb-1">@name</h5>
+                            <p class="text-muted mb-3">@sub</p>
+                            <div class="mb-3">
+                                <span class="price-figure">$@price</span>
+                                <span class="text-muted">@Locale["land.pricing.monthly"]</span>
+                            </div>
+                            <ul class="list-clean mb-4">
+                                @foreach (var f in feats)
+                                {
+                                    <li><i class="bi bi-check-circle-fill"></i> @f</li>
+                                }
+                            </ul>
+                            <a class="btn @(featured ? "btn-primary" : "btn-outline-secondary") btn-block" asp-page="/Pricing">
+                                @Locale["land.pricing.choose"]
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* ============= FAQ ============= *@
+<section class="section-tight">
+    <div class="container">
+        <div class="text-center mb-4">
+            <span class="section-eyebrow">@(isAr ? "أسئلة شائعة" : "Help")</span>
+            <h2 class="mt-3">@Locale["land.faq.title"]</h2>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="accordion" id="faqAccordion">
+                    @{ int idx = 0; }
+                    @foreach (var f in DemoData.Faqs)
+                    {
+                        idx++;
+                        var collapseId = $"faq{idx}";
+                        var headingId = $"faqHead{idx}";
+                        var collapsed = idx == 1 ? "" : "collapsed";
+                        var show = idx == 1 ? "show" : "";
+                        <div class="card feature-card mb-2">
+                            <div class="card-header" id="@headingId" style="background: transparent; border:0;">
+                                <button class="btn btn-ghost btn-block d-flex justify-content-between align-items-center @collapsed" type="button"
+                                        data-toggle="collapse" data-target="#@collapseId" aria-expanded="@(idx == 1 ? "true" : "false")" aria-controls="@collapseId"
+                                        style="font-weight:700;">
+                                    <span>@TFQ(f)</span>
+                                    <i class="bi bi-chevron-down" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div id="@collapseId" class="collapse @show" aria-labelledby="@headingId" data-parent="#faqAccordion">
+                                <div class="card-body pt-0 text-muted">@TFA(f)</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ============= BIG CTA ============= *@
+<section class="section">
+    <div class="container">
+        <div class="card feature-card text-center" style="padding: 3rem 1rem; background: linear-gradient(135deg, rgba(79,70,229,.10), rgba(124,58,237,.10));">
+            <div>
+                <h2 class="mb-2">@Locale["land.cta.bigTitle"]</h2>
+                <p class="text-muted lead mx-auto mb-4" style="max-width: 36rem;">@Locale["land.cta.bigSubtitle"]</p>
+                <div class="d-flex flex-column flex-sm-row justify-content-center" style="gap:.75rem;">
+                    <a class="btn btn-primary btn-lg px-5" asp-page="/Courses/Index">
+                        <i class="bi bi-rocket-takeoff mr-2" aria-hidden="true"></i>@Locale["land.cta.start"]
+                    </a>
+                    <a class="btn btn-outline-secondary btn-lg px-5" asp-page="/Pricing">
+                        @Locale["nav.pricing"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

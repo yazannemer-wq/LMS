@@ -1,0 +1,86 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Student.CalendarModel
+@{
+    ViewData["Title"] = Locale["sb.calendar"];
+    Layout = "_StudentLayout";
+    var isAr = Locale.IsRtl;
+    var today = System.DateTime.Today;
+    var month = today.Month;
+    var year = today.Year;
+    var firstDay = new System.DateTime(year, month, 1);
+    var daysInMonth = System.DateTime.DaysInMonth(year, month);
+    int startOffset = ((int)firstDay.DayOfWeek);
+    var monthName = isAr
+        ? new[] { "يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر" }[month - 1]
+        : firstDay.ToString("MMMM", System.Globalization.CultureInfo.InvariantCulture);
+    var dayNames = isAr
+        ? new[] { "أحد","إثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت" }
+        : new[] { "Sun","Mon","Tue","Wed","Thu","Fri","Sat" };
+    var eventDays = new[] { 3, 8, 12, 15, 19, 22, 26 };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-calendar3 mr-2"></i>@Locale["sb.calendar"]</h2>
+        <div class="text-muted">@(isAr ? "جدولك التعليمي القادم." : "Your upcoming learning schedule.")</div>
+    </div>
+    <div class="d-flex align-items-center" style="gap:.5rem;">
+        <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-chevron-left"></i></button>
+        <strong>@monthName @year</strong>
+        <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-chevron-right"></i></button>
+        <button class="btn btn-primary btn-sm"><i class="bi bi-plus-lg mr-2"></i>@(isAr ? "إضافة" : "Add")</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card">
+            <div class="card-body">
+                <div class="calendar-head">
+                    @foreach (var d in dayNames) { <span>@d</span> }
+                </div>
+                <div class="calendar-grid">
+                    @for (int i = 0; i < startOffset; i++)
+                    {
+                        <div class="calendar-cell muted">&nbsp;</div>
+                    }
+                    @for (int d = 1; d <= daysInMonth; d++)
+                    {
+                        var classes = "calendar-cell";
+                        if (d == today.Day) classes += " today";
+                        if (System.Linq.Enumerable.Contains(eventDays, d)) classes += " has-event";
+                        <div class="@classes">@d</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-calendar-event mr-2"></i>@Locale["dash.upcoming"]</h5>
+                @foreach (var b in DemoData.UpcomingClasses)
+                {
+                    <div class="d-flex align-items-start mb-3" style="gap:.65rem;">
+                        <div style="width:42px; height:42px; border-radius:12px; background:@(b.Color)20; color:@b.Color; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">
+                            <i class="bi bi-camera-video"></i>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="font-weight-bold">@(isAr ? b.TitleAr : b.TitleEn)</div>
+                            <div class="text-muted small">@(isAr ? b.TimeAr : b.TimeEn) · @(isAr ? b.InstructorAr : b.InstructorEn)</div>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-bell"></i></button>
+                    </div>
+                }
+                <hr />
+                <div class="d-flex flex-wrap" style="gap:.5rem;">
+                    <span class="badge-soft" style="background:rgba(79,70,229,.15); color:#4f46e5; border-color:rgba(79,70,229,.3);"><span style="width:6px; height:6px; background:#4f46e5; border-radius:999px; display:inline-block; margin-inline-end:.25rem;"></span>@(isAr ? "صفوف مباشرة" : "Live classes")</span>
+                    <span class="badge-soft" style="background:rgba(245,158,11,.15); color:#f59e0b; border-color:rgba(245,158,11,.3);"><span style="width:6px; height:6px; background:#f59e0b; border-radius:999px; display:inline-block; margin-inline-end:.25rem;"></span>@(isAr ? "واجبات" : "Assignments")</span>
+                    <span class="badge-soft" style="background:rgba(22,163,74,.15); color:#16a34a; border-color:rgba(22,163,74,.3);"><span style="width:6px; height:6px; background:#16a34a; border-radius:999px; display:inline-block; margin-inline-end:.25rem;"></span>@(isAr ? "اختبارات" : "Quizzes")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

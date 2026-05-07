@@ -1,0 +1,177 @@
+@using ArkkanLMS.Core.Entities
+@using ArkkanLMS.Core.Types
+@using ArkkanLMS.Web.Localization
+@inject ArkkanLMS.Persistence.AppDbContext AppDbContext
+@{
+    User currentUser = null;
+    if (Context.User.Identity?.IsAuthenticated == true)
+    {
+        var userIdValue = Context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (int.TryParse(userIdValue, out int id))
+        {
+            currentUser = AppDbContext.Users.Find(id);
+        }
+    }
+    var dir = Locale.Direction;
+    var lang = Locale.Culture;
+    var themeAttr = Locale.Theme;
+}
+<!DOCTYPE html>
+<html lang="@lang" dir="@dir" data-theme="@themeAttr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @Locale["brand.name"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@@400;500;600;700&family=Poppins:wght@@500;600;700;800&family=Cairo:wght@@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/js/site.js"></script>
+</head>
+<body class="d-flex flex-column min-vh-100 app-shell">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light navbar-glass border-bottom">
+            <div class="container">
+                <a class="navbar-brand font-weight-bold d-flex align-items-center" asp-area="" asp-page="/Index">
+                    <span class="brand-mark mr-2" aria-hidden="true"></span>
+                    @Locale["brand.name"]
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar" aria-controls="mainNavbar"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav ml-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Index"><i class="bi bi-house-door mr-2" aria-hidden="true"></i>@Locale["nav.home"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Courses/Index"><i class="bi bi-journal-bookmark mr-2" aria-hidden="true"></i>@Locale["nav.courses"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Pricing"><i class="bi bi-cash-stack mr-2" aria-hidden="true"></i>@Locale["nav.pricing"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/About"><i class="bi bi-info-circle mr-2" aria-hidden="true"></i>@Locale["nav.about"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Contact"><i class="bi bi-envelope mr-2" aria-hidden="true"></i>@Locale["nav.contact"]</a>
+                        </li>
+                        @if (currentUser != null)
+                        {
+                            <li class="nav-item">
+                                @if (currentUser.Role == UserRoleType.Admin)
+                                {
+                                    <a class="nav-link" asp-area="" asp-page="/Admin/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>@Locale["nav.workspace"]</a>
+                                }
+                                else if (currentUser.Role == UserRoleType.Trainer)
+                                {
+                                    <a class="nav-link" asp-area="" asp-page="/Instructor/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>@Locale["nav.workspace"]</a>
+                                }
+                                else if (currentUser.Role == UserRoleType.Moderator)
+                                {
+                                    <a class="nav-link" asp-area="" asp-page="/Moderator/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>@Locale["nav.workspace"]</a>
+                                }
+                                else if (currentUser.Role == UserRoleType.Support)
+                                {
+                                    <a class="nav-link" asp-area="" asp-page="/Support/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>@Locale["nav.workspace"]</a>
+                                }
+                                else if (currentUser.Role == UserRoleType.Finance)
+                                {
+                                    <a class="nav-link" asp-area="" asp-page="/Finance/Dashboard"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>@Locale["nav.workspace"]</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link" asp-area="" asp-page="/Dashboard/Index"><i class="bi bi-speedometer2 mr-2" aria-hidden="true"></i>@Locale["nav.workspace"]</a>
+                                }
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Account/Logout"><i class="bi bi-box-arrow-right mr-2" aria-hidden="true"></i>@Locale["nav.logout"]</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Account/Login"><i class="bi bi-person-circle mr-2" aria-hidden="true"></i>@Locale["nav.login"]</a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-flex align-items-center mt-3 mt-lg-0 ml-lg-3" style="gap:.5rem;">
+                        @await Html.PartialAsync("_LanguageSwitcher")
+                        @await Html.PartialAsync("_ThemeSwitcher")
+                        @if (currentUser != null)
+                        {
+                            <span class="navbar-user-pill">
+                                <small class="d-flex align-items-center flex-wrap">
+                                    <span class="mr-2">@Locale["common.signedInAs"] <strong>@currentUser.Name</strong></span>
+                                    <span class="role-chip role-@currentUser.Role.ToString().ToLowerInvariant()">
+                                        @if (currentUser.Role == UserRoleType.Admin)
+                                        {
+                                            <i class="bi bi-shield-lock mr-1" aria-hidden="true"></i>
+                                        }
+                                        else if (currentUser.Role == UserRoleType.Trainer)
+                                        {
+                                            <i class="bi bi-mortarboard mr-1" aria-hidden="true"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-person-badge mr-1" aria-hidden="true"></i>
+                                        }
+                                        @currentUser.Role
+                                    </span>
+                                </small>
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="flex-fill py-4">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="border-top footer footer-glass">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <a class="navbar-brand font-weight-bold d-flex align-items-center mb-2" asp-area="" asp-page="/Index">
+                        <span class="brand-mark mr-2" aria-hidden="true"></span>
+                        @Locale["brand.name"]
+                    </a>
+                    <div class="text-muted">@Locale["brand.tagline"]</div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="text-faint text-uppercase small mb-2" style="letter-spacing:.1em;">@Locale["nav.courses"]</div>
+                    <a class="d-block py-1" asp-page="/Courses/Index">@Locale["nav.courses"]</a>
+                    <a class="d-block py-1" asp-page="/Pricing">@Locale["nav.pricing"]</a>
+                    <a class="d-block py-1" asp-page="/FAQ">@Locale["nav.faq"]</a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="text-faint text-uppercase small mb-2" style="letter-spacing:.1em;">@Locale["brand.name"]</div>
+                    <a class="d-block py-1" asp-page="/About">@Locale["nav.about"]</a>
+                    <a class="d-block py-1" asp-page="/Contact">@Locale["nav.contact"]</a>
+                    <a class="d-block py-1" asp-page="/Privacy">@Locale["foot.privacy"]</a>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="text-faint text-uppercase small mb-2" style="letter-spacing:.1em;">@Locale["common.preferences"]</div>
+                    @await Html.PartialAsync("_LanguageSwitcher")
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 border-top">
+                <span class="text-muted small">@Locale["foot.copy"]</span>
+                <span class="text-muted small">@Locale["brand.tagline"]</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

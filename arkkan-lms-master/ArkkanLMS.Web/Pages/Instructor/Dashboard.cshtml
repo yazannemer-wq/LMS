@@ -1,0 +1,183 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Instructor.DashboardModel
+@{
+    ViewData["Title"] = Locale["sb.dashboard"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+    <div>
+        <h2 class="mb-1">@Locale["trainer.title"]</h2>
+        <div class="text-muted">@Locale["trainer.subtitle"]</div>
+    </div>
+    <div class="mt-3 mt-md-0 d-flex" style="gap:.5rem;">
+        <a class="btn btn-outline-secondary" asp-page="/Trainer/Analytics"><i class="bi bi-bar-chart mr-2"></i>@Locale["sb.analytics"]</a>
+        <a class="btn btn-primary" asp-page="/Trainer/Builder"><i class="bi bi-plus-lg mr-2"></i>@Locale["sb.createCourse"]</a>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var k in new[] {
+        ("bi-cash-coin",          "trainer.kpi.revenue",     "$3,420", "+18.4%", true,  "#10b981"),
+        ("bi-people",             "trainer.kpi.students",    "8,142",  "+312",   true,  "#4f46e5"),
+        ("bi-check2-square",      "trainer.kpi.completion",  "72%",    "+4.2%",  true,  "#7c3aed"),
+        ("bi-star-fill",          "trainer.kpi.rating",      "4.8",    "+0.1",   true,  "#f59e0b"),
+    })
+    {
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card kpi-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="text-muted"><i class="bi @k.Item1 mr-2" style="color:@k.Item6"></i>@Locale[k.Item2]</div>
+                        <span class="@(k.Item5 ? "kpi-trend-up" : "kpi-trend-down") small"><i class="bi @(k.Item5 ? "bi-arrow-up-right" : "bi-arrow-down-right")"></i> @k.Item4</span>
+                    </div>
+                    <div class="kpi-value">@k.Item3</div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-8 mb-3">
+        <div class="card chart-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0"><i class="bi bi-graph-up-arrow mr-2"></i>@Locale["trainer.revenueChart"]</h5>
+                    <div class="nav-tabs-pill">
+                        <button class="active">30D</button><button>90D</button><button>1Y</button>
+                    </div>
+                </div>
+                <canvas id="revenueChart" height="110"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-3">
+        <div class="card chart-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-people mr-2"></i>@Locale["trainer.studentGrowth"]</h5>
+                <canvas id="growthChart" height="110"></canvas>
+                <hr/>
+                <div class="d-flex justify-content-between text-muted small">
+                    <span>@(isAr ? "هذا الشهر" : "This month")</span>
+                    <strong class="text-grad">+312</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7 mb-3">
+        <div class="card chart-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-bar-chart-line mr-2"></i>@Locale["trainer.coursePerf"]</h5>
+                <canvas id="perfChart" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-person-plus mr-2"></i>@Locale["trainer.recentEnroll"]</h5>
+                @foreach (var e in DemoData.RecentEnrollments)
+                {
+                    <div class="d-flex align-items-center mb-3" style="gap:.65rem;">
+                        <span class="avatar avatar-sm" style="background: linear-gradient(135deg, @e.Color, #1e1b4b);">@e.Initials</span>
+                        <div class="flex-fill">
+                            <div class="font-weight-bold">@(isAr ? e.StudentAr : e.StudentEn)</div>
+                            <div class="text-muted small">@(isAr ? e.CourseAr : e.CourseEn)</div>
+                        </div>
+                        <div class="text-faint small">@(isAr ? e.TimeAr : e.TimeEn)</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-chat-quote mr-2"></i>@Locale["trainer.pendingReviews"]</h5>
+                <div class="d-flex align-items-start mb-3 pb-3 border-bottom" style="gap:.65rem; border-color:var(--stroke);">
+                    <span class="avatar avatar-sm" style="background: linear-gradient(135deg,#fb7185,#1e1b4b);">RM</span>
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between">
+                            <strong>@(isAr ? "رنا م." : "Rana M.")</strong>
+                            <span class="stars small"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i></span>
+                        </div>
+                        <p class="text-muted mb-0">@(isAr ? "محتوى ممتاز، أتمنى إضافة أمثلة أكثر للجزء الثالث." : "Excellent content, would love more examples in section 3.")</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3 pb-3 border-bottom" style="gap:.65rem; border-color:var(--stroke);">
+                    <span class="avatar avatar-sm" style="background: linear-gradient(135deg,#0ea5e9,#1e1b4b);">JM</span>
+                    <div class="flex-fill">
+                        <div class="d-flex justify-content-between">
+                            <strong>@(isAr ? "جون م." : "John M.")</strong>
+                            <span class="stars small"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                        </div>
+                        <p class="text-muted mb-0">@(isAr ? "أفضل دورة على الإطلاق! شكرًا لك." : "Best course I've ever taken — thank you!")</p>
+                    </div>
+                </div>
+                <a class="btn btn-outline-secondary btn-block" asp-page="/Trainer/Reviews">@Locale["common.viewAll"]</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3"><i class="bi bi-magic mr-2"></i>@(isAr ? "مساعد المدرّب الذكي" : "AI course assistant")</h5>
+                <p class="text-muted">@(isAr ? "ولّد مخطط دورة، ولّد اختبارات، ولخّص الدروس مع استشهادات." : "Generate course outlines, quizzes, and lesson summaries — with citations.")</p>
+                <div class="d-flex flex-wrap" style="gap:.5rem;">
+                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-list-stars mr-2"></i>@(isAr ? "ولّد مخطّط" : "Outline")</button>
+                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-question-circle mr-2"></i>@(isAr ? "أنشئ اختبار" : "Quiz")</button>
+                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-text-paragraph mr-2"></i>@(isAr ? "لخّص الدرس" : "Summary")</button>
+                </div>
+                <div class="glass-soft mt-3 p-3">
+                    <div class="text-faint small mb-1">@(isAr ? "اقتراح ذكاء اصطناعي" : "AI suggestion")</div>
+                    @(isAr ? "أضف 3 أمثلة عملية إلى الدرس ‘Suspense والتدفّق’ لرفع نسبة الإكمال 9%." : "Add 3 hands-on examples to ‘Suspense & streaming’ to lift completion ~9%.")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+  (function(){
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const grid = isDark ? 'rgba(148,163,184,.18)' : 'rgba(148,163,184,.25)';
+    const text = isDark ? '#cbd5e1' : '#475569';
+
+    const r = document.getElementById('revenueChart');
+    if (r && window.Chart) new Chart(r, {
+      type: 'line',
+      data: {
+        labels: ['Apr 1','5','9','13','17','21','25','29'],
+        datasets: [{ label: 'Revenue', data: [120, 220, 280, 380, 460, 540, 620, 720], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.18)', tension:.4, fill:true, pointRadius:0 }]
+      },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{ticks:{color:text}, grid:{color:grid}}, x:{ticks:{color:text}, grid:{display:false}}} }
+    });
+    const g = document.getElementById('growthChart');
+    if (g && window.Chart) new Chart(g, {
+      type: 'bar',
+      data: { labels: ['M','T','W','T','F','S','S'], datasets: [{ data: [12, 32, 28, 41, 24, 38, 45], backgroundColor: 'rgba(79,70,229,.55)', borderRadius:8 }] },
+      options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{ticks:{color:text}, grid:{color:grid}}, x:{ticks:{color:text}, grid:{display:false}}} }
+    });
+    const p = document.getElementById('perfChart');
+    if (p && window.Chart) new Chart(p, {
+      type: 'bar',
+      data: { labels: ['Advanced React','ML A–Z','Figma','Cloud Pro','Cybersec'],
+              datasets: [
+                { label: 'Completion', data:[72,64,82,55,68], backgroundColor:'rgba(124,58,237,.65)', borderRadius:8 },
+                { label: 'Engagement', data:[88,76,94,68,80], backgroundColor:'rgba(16,185,129,.55)', borderRadius:8 }
+              ] },
+      options: { responsive:true, plugins:{legend:{position:'top', labels:{color:text}}}, scales:{y:{ beginAtZero:true, max:100, ticks:{color:text}, grid:{color:grid}}, x:{ticks:{color:text}, grid:{display:false}}}}
+    });
+  })();
+</script>
+}

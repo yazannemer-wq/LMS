@@ -1,0 +1,120 @@
+@page
+@using ArkkanLMS.Web.Localization
+@model ArkkanLMS.Web.Pages.Trainer.BuilderModel
+@{
+    ViewData["Title"] = Locale["sb.builder"];
+    Layout = "_TrainerLayout";
+    var isAr = Locale.IsRtl;
+
+    var sections = new (string En, string Ar, (string En, string Ar, string Type, string Duration)[] Lessons)[]
+    {
+        ("Welcome & onboarding",  "ترحيب وتهيئة",  new[]{
+            ("Course welcome",       "ترحيب الدورة",         "video", "02:14"),
+            ("Set expectations",     "حدّد التوقّعات",        "video", "06:08"),
+            ("Tools you'll need",    "الأدوات التي ستحتاج",  "reading","--") }),
+        ("Core concepts",         "المفاهيم الأساسية",       new[]{
+            ("Mental model",         "النموذج الذهني",       "video", "11:30"),
+            ("Hands-on demo",        "تجربة عملية",           "video", "16:45"),
+            ("Quiz: concept check",  "اختبار: مراجعة سريعة", "quiz",  "--") }),
+        ("Capstone project",      "المشروع الختامي",         new[]{
+            ("Project brief",        "مهمة المشروع",          "reading","--"),
+            ("Submit your work",     "سلّم عملك",             "assignment","--") }),
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap" style="gap:1rem;">
+    <div>
+        <h2 class="mb-1"><i class="bi bi-grid-3x3-gap mr-2"></i>@Locale["sb.builder"]</h2>
+        <div class="text-muted">@(isAr ? "ابنِ منهجك بالسحب والإفلات. كل تغيير يُحفظ تلقائيًا." : "Build your curriculum with drag-and-drop. Every change auto-saves.")</div>
+    </div>
+    <div class="d-flex" style="gap:.5rem;">
+        <button class="btn btn-outline-secondary"><i class="bi bi-eye mr-2"></i>@(isAr ? "معاينة" : "Preview")</button>
+        <button class="btn btn-primary"><i class="bi bi-rocket-takeoff mr-2"></i>@(isAr ? "نشر" : "Publish")</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <h5 class="mb-3">@(isAr ? "تفاصيل الدورة" : "Course details")</h5>
+                <div class="form-group mb-3">
+                    <label class="text-faint small">@(isAr ? "العنوان" : "Title")</label>
+                    <input class="form-control" value="@(isAr ? "React و Next.js المتقدّم" : "Advanced React & Next.js")" />
+                </div>
+                <div class="form-group mb-3">
+                    <label class="text-faint small">@(isAr ? "الفئة" : "Category")</label>
+                    <select class="form-control">
+                        <option>@(isAr ? "تطوير الويب" : "Web Development")</option>
+                        <option>@(isAr ? "علم البيانات" : "Data Science")</option>
+                        <option>@(isAr ? "التصميم" : "Design")</option>
+                    </select>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="text-faint small">@(isAr ? "المستوى" : "Level")</label>
+                    <select class="form-control">
+                        <option>@Locale["cat.beginner"]</option>
+                        <option>@Locale["cat.intermediate"]</option>
+                        <option selected>@Locale["cat.advanced"]</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="text-faint small">@(isAr ? "السعر" : "Price")</label>
+                        <input class="form-control" value="$79" />
+                    </div>
+                    <div class="col-6">
+                        <label class="text-faint small">@(isAr ? "العملة" : "Currency")</label>
+                        <select class="form-control"><option>USD</option><option>EUR</option><option>SAR</option></select>
+                    </div>
+                </div>
+                <hr/>
+                <h6 class="mb-2"><i class="bi bi-image mr-2"></i>@(isAr ? "صورة الغلاف" : "Cover image")</h6>
+                <div class="card-thumb" style="height:120px; background:linear-gradient(135deg,#4f46e5,#1e1b4b);"><i class="bi bi-cloud-upload"></i></div>
+                <button class="btn btn-outline-secondary btn-block mt-2"><i class="bi bi-upload mr-2"></i>@(isAr ? "رفع جديد" : "Upload new")</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8 mb-3">
+        <div class="card feature-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0"><i class="bi bi-list-task mr-2"></i>@(isAr ? "المنهج" : "Curriculum")</h5>
+                    <button class="btn btn-primary btn-sm"><i class="bi bi-plus-lg mr-2"></i>@(isAr ? "قسم جديد" : "Add section")</button>
+                </div>
+
+                @{ int sIndex = 0; }
+                @foreach (var (sEn, sAr, lessons) in sections)
+                {
+                    sIndex++;
+                    <div class="builder-section">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center" style="gap:.5rem;">
+                                <i class="bi bi-grip-vertical grip"></i>
+                                <strong>@(isAr ? sAr : sEn)</strong>
+                                <span class="badge-soft">@lessons.Length</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-ghost btn-sm"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-ghost btn-sm text-danger"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        @foreach (var l in lessons)
+                        {
+                            var icon = l.Type switch { "video" => "bi-play-circle", "quiz" => "bi-patch-question", "assignment" => "bi-pencil-square", _ => "bi-file-text" };
+                            <div class="builder-lesson">
+                                <i class="bi bi-grip-vertical grip"></i>
+                                <i class="bi @icon" style="color: var(--brand-1)"></i>
+                                <div class="flex-fill">@(isAr ? l.Ar : l.En)</div>
+                                <span class="text-faint small">@l.Duration</span>
+                                <button class="btn btn-ghost btn-sm"><i class="bi bi-pencil"></i></button>
+                            </div>
+                        }
+                        <button class="btn btn-outline-secondary btn-sm mt-2"><i class="bi bi-plus-lg mr-2"></i>@(isAr ? "أضف درسًا" : "Add lesson")</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
