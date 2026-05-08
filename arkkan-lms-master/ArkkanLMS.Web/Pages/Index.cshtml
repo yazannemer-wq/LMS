@@ -138,7 +138,7 @@
             {
                 <div class="col-md-6 col-lg-3 mb-4">
                     <div class="card course-card h-100">
-                        <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color 0%, #1e1b4b 100%);">
+                        <div class="card-thumb m-3">
                             @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
                             else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
                             <i class="bi @c.Icon" aria-hidden="true"></i>
@@ -193,7 +193,7 @@
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card author-card h-100">
                         <div class="card-body d-flex align-items-center" style="gap:1rem;">
-                            <span class="avatar avatar-lg" style="background: linear-gradient(135deg, @i.Color, #1e1b4b);">@i.Initials</span>
+                            <span class="avatar avatar-lg">@i.Initials</span>
                             <div class="flex-fill">
                                 <h6 class="mb-1">@TI(i)</h6>
                                 <div class="text-muted small mb-2">@TIT(i)</div>
@@ -230,7 +230,7 @@
                             </div>
                             <p class="mb-3" style="font-size:.98rem;">“@TT(t)”</p>
                             <div class="d-flex align-items-center mt-auto" style="gap:.65rem;">
-                                <span class="avatar avatar-sm" style="background: linear-gradient(135deg, @t.Color, #1e1b4b);">@t.Initials</span>
+                                <span class="avatar avatar-sm">@t.Initials</span>
                                 <div>
                                     <div class="font-weight-bold">@t.Name</div>
                                     <div class="text-muted small">@TTR(t)</div>
@@ -271,7 +271,7 @@
                         @if (featured)
                         {
                             <div class="text-center" style="margin-top:-12px;">
-                                <span class="badge-soft" style="background:var(--grad-brand); color:#fff; border-color:transparent; font-weight:700;">@Locale["land.pricing.popular"]</span>
+                                <span class="badge-soft" style="background:var(--accent-fill-strong); color:#fafaf9; border-color:var(--stroke); font-weight:700;">@Locale["land.pricing.popular"]</span>
                             </div>
                         }
                         <div class="card-body">
@@ -339,7 +339,7 @@
 @* ============= BIG CTA ============= *@
 <section class="section">
     <div class="container">
-        <div class="card feature-card text-center" style="padding: 3rem 1rem; background: linear-gradient(135deg, rgba(79,70,229,.10), rgba(124,58,237,.10));">
+        <div class="card feature-card text-center" style="padding: 3rem 1rem; background: var(--brand-soft);">
             <div>
                 <h2 class="mb-2">@Locale["land.cta.bigTitle"]</h2>
                 <p class="text-muted lead mx-auto mb-4" style="max-width: 36rem;">@Locale["land.cta.bigSubtitle"]</p>

@@ -110,7 +110,7 @@
                 @foreach (var l in DemoData.ContinueLessons)
                 {
                     <div class="d-flex align-items-center mb-3" style="gap:.85rem;">
-                        <div style="width:60px; height:60px; border-radius: 14px; background: linear-gradient(135deg, @l.Color, #1e1b4b); display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                        <div style="width:60px; height:60px; border-radius:14px; background:var(--accent-fill); display:flex; align-items:center; justify-content:center; color:#fafaf9; flex-shrink:0; border:1px solid var(--stroke);">
                             <i class="bi @l.Icon" style="font-size:1.4rem;"></i>
                         </div>
                         <div class="flex-fill" style="min-width:0;">
@@ -161,7 +161,7 @@
     {
         <div class="col-md-6 col-lg-3 mb-3">
             <div class="card course-card h-100">
-                <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color, #1e1b4b);">
+                <div class="card-thumb m-3">
                     @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
                     else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
                     <i class="bi @c.Icon"></i>

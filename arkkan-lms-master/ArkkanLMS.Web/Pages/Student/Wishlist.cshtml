@@ -20,7 +20,7 @@
 {
     <div class="col-md-6 col-lg-4 mb-4">
         <div class="card course-card h-100">
-            <div class="card-thumb m-3" style="background: linear-gradient(135deg, @c.Color, #1e1b4b);">
+            <div class="card-thumb m-3">
                 @if (c.Bestseller) { <span class="bestseller-pill">@Locale["cat.bestseller"]</span> }
                 else if (c.New)    { <span class="new-pill">@Locale["cat.new"]</span> }
                 <i class="bi @c.Icon"></i>
